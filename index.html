@@ -373,13 +373,26 @@ td.et{white-space:nowrap}
 /* =====================================================================
    1. CONFIGURAÇÃO — altere apenas este bloco no dia a dia
    ===================================================================== */
+/* Data de hoje (fuso local) no formato AAAA-MM-DD — recalculada a cada carregamento da página */
+function hojeISO(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
 const CFG = {
-  posicao:     "2026-09-17",   // data de referência do painel
+  posicao:     hojeISO(),      // data de referência do painel — sempre a data atual
   inicioLinha: "2026-04-01",   // início do eixo do cronograma
   fimLinha:    "2026-10-31",   // fim do eixo do cronograma
   mapIni:      "2026-04-15",   // período fixo do mapeamento da carteira
   mapFim:      "2026-04-22"
 };
+
+/* Recarrega a aba automaticamente à meia-noite (fuso local) para que a posição do
+   painel acompanhe a virada do dia mesmo em telas deixadas abertas indefinidamente. */
+(function agendarRecargaMeiaNoite(){
+  const agora = new Date();
+  const proxMeiaNoite = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate()+1, 0, 0, 5);
+  setTimeout(() => location.reload(), proxMeiaNoite - agora);
+})();
 
 /* Indicadores — espelham a aba "KPIs" da planilha base_conhecimento.xlsx */
 const KPI = {
