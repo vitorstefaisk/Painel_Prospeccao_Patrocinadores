@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prospecção de Novos Patrocinadores | Ipasgo Saúde</title>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+/* Paleta — Guia da Marca Ipasgo Saúde, pp. 26–27 (sem degradês ou transparências nas cores da marca) */
+:root{
+  --verde:#007940;      /* Verde Cerrado */
+  --lima:#C5E838;       /* Lima Goiá */
+  --areia:#F3EEE4;      /* Areia Caldas */
+  --araguaia:#6EB02E;   /* Verde Araguaia */
+  --ipe:#E7C221;        /* Amarelo Ipê */
+  --planalto:#EFE98C;   /* Luz do Planalto */
+  --chumbo:#2F302A;     /* Chumbo Serra Dourada */
+  --verde-cl:#1F8A57; --verde-bd:#3E9C6E;
+  --neutro:#B8B2A5; --neutro-cl:#DAD5CA;
+  --bg:var(--areia); --card:#FFFFFF; --linha:#E3DDD0; --trilho:#F1EDE4;
+  --txt:var(--chumbo); --txt2:#63655D; --txt3:#8F918A;
+  --sans:"General Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --raio:14px; --sombra:0 1px 2px rgba(47,48,42,.05),0 6px 18px rgba(47,48,42,.05);
+  --rot:250px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);font-family:var(--sans);color:var(--txt);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.wrap{max-width:1300px;margin:0 auto;padding:0 0 48px}
+button{font-family:inherit}
+
+/* ---------- Cabeçalho ---------- */
+.hero{background:var(--verde);color:var(--areia);padding:34px 32px 78px;position:relative}
+.hero h1{margin:0;font-size:31px;font-weight:600;letter-spacing:-.4px;color:#fff;line-height:1.15}
+.hero p.sub{margin:9px 0 0;max-width:680px;font-size:14.5px;line-height:1.55;color:#D3E6DA}
+.badges{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+.badge{background:var(--verde-cl);border:1px solid var(--verde-bd);border-radius:999px;padding:6px 14px;font-size:12px;color:#E4F1E9}
+.badge b{color:var(--lima);font-weight:600}
+.posicao{position:absolute;right:32px;top:38px;text-align:right;font-size:12px;color:#BFD9C8;line-height:1.5}
+.posicao strong{display:block;color:var(--lima);font-size:18px;font-weight:600}
+
+/* ---------- KPIs ---------- */
+.kpis{position:relative;z-index:2;display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:-52px 32px 0}
+.kpi{background:var(--card);border-radius:var(--raio);padding:16px 16px;box-shadow:var(--sombra)}
+.kpi .rot{font-size:12.5px;color:var(--txt2);font-weight:500;line-height:1.3}
+.kpi .val{font-size:26px;font-weight:600;margin-top:8px;letter-spacing:-.6px;line-height:1.1;color:var(--verde)}
+.kpi .val small{font-size:13.5px;font-weight:500;color:var(--txt2);letter-spacing:0}
+.kpi .nota{margin-top:7px;font-size:12px;color:var(--txt2);line-height:1.45}
+.kpi.donut{display:flex;align-items:center;gap:10px}
+.donut-svg{flex:0 0 46px}
+.donut-svg text{font-size:10.5px;font-weight:600;fill:var(--verde);font-family:var(--sans)}
+
+/* ---------- Destaque de reversão ---------- */
+#alertas{margin:18px 32px 0;display:flex;flex-direction:column;gap:12px}
+#alertas:empty{display:none}
+.alerta{background:var(--card);border-radius:var(--raio);box-shadow:var(--sombra);border-left:5px solid var(--ipe);padding:16px 20px;display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.alerta.ok{border-left-color:var(--araguaia)}
+.alerta.agenda{border-left-color:var(--lima)}
+.alerta.agenda .alerta-tag{background:var(--lima);color:var(--chumbo)}
+.alerta.ok .alerta-tag{background:var(--araguaia);color:#fff}
+.alerta-tag{background:var(--ipe);color:var(--chumbo);font-size:10.5px;font-weight:600;padding:5px 11px;border-radius:999px;white-space:nowrap;letter-spacing:.2px}
+.alerta-txt{flex:1;min-width:260px;font-size:13px;line-height:1.55;color:var(--txt2)}
+.alerta-txt b{color:var(--txt);font-weight:600}
+
+/* ---------- Blocos ---------- */
+.bloco{background:var(--card);border-radius:var(--raio);box-shadow:var(--sombra);margin:22px 32px 0;padding:26px 28px}
+.bloco h2{margin:0;font-size:17px;font-weight:600;letter-spacing:-.2px}
+.bloco h2 .obs{font-size:12px;font-weight:500;color:var(--txt2);letter-spacing:0}
+.bloco p.leg{margin:5px 0 0;font-size:13px;color:var(--txt2);line-height:1.5}
+.head-flex{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
+.aviso{margin:14px 0 0;font-size:11.5px;color:var(--txt3);line-height:1.5;padding:9px 12px;background:var(--areia);border-radius:8px;display:inline-block}
+
+/* ---------- Jornada (stepper) ---------- */
+.stepper{display:flex;margin-top:26px;position:relative}
+.step{flex:1;text-align:center;position:relative;min-width:0;cursor:pointer;padding:6px 0 10px;border-radius:10px;transition:background .12s}
+.step:hover{background:#FAF8F3}
+.step .conn{position:absolute;top:27px;height:3px;background:var(--linha);left:50%;width:100%;z-index:0}
+.step:last-child .conn{display:none}
+.step .conn.ok{background:var(--araguaia)}
+.step .conn.now{background:var(--ipe)}
+.bola{width:44px;height:44px;border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;color:#fff;position:relative;z-index:1;border:4px solid var(--card);transition:border-color .15s}
+.bola.ok{background:var(--verde)}
+.bola.now{background:var(--ipe);color:var(--chumbo)}
+.bola.off{background:var(--neutro)}
+.step.sel .bola{border-color:var(--lima)}
+.step.sel .nome{color:var(--verde)}
+.step .nome{margin-top:12px;font-size:12.5px;font-weight:600;line-height:1.3;padding:0 8px;color:var(--txt)}
+.step .pct{margin-top:4px;font-size:12px;color:var(--txt2)}
+.step .pct b{color:var(--txt);font-weight:600}
+.step .conv{margin-top:5px;font-size:11px;color:var(--txt3)}
+.step .conv b{color:var(--verde);font-weight:600}
+.dica{margin-top:14px;font-size:11.5px;color:var(--txt3)}
+
+/* ---------- Cronograma (Gantt) ---------- */
+.legenda{display:flex;gap:16px;font-size:11.5px;color:var(--txt2);align-items:center;flex-wrap:wrap}
+.legenda i{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:5px;vertical-align:-1px}
+.ferramentas{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.gantt{margin-top:18px}
+.eixo{position:relative;height:22px;margin-left:var(--rot);border-bottom:1px solid var(--linha)}
+.eixo span{position:absolute;top:0;font-size:11px;color:var(--txt3);transform:translateX(-50%);white-space:nowrap}
+.gantt-corpo{position:relative}
+.grade{position:absolute;top:0;bottom:0;border-left:1px solid var(--trilho);z-index:0}
+.fase{border-bottom:1px solid var(--trilho);position:relative;z-index:1}
+.fase-lin{display:flex;align-items:center;padding:11px 0;cursor:pointer;transition:background .12s;border-radius:8px}
+.fase-lin:hover{background:#FAF8F3}
+.fase.sel .fase-lin{background:#F2F8F4}
+.rotulo{width:var(--rot);flex:0 0 var(--rot);padding-right:16px;display:flex;gap:8px;align-items:flex-start}
+.seta{color:var(--neutro);font-size:11px;margin-top:3px;transition:transform .18s;flex:0 0 10px}
+.fase.aberta .seta{transform:rotate(90deg)}
+.rotulo .tit{font-size:12.5px;font-weight:600;line-height:1.3}
+.rotulo .tag{display:inline-block;margin-left:6px;font-size:9.5px;font-weight:600;color:var(--verde);background:#E1F0E7;padding:2px 7px;border-radius:999px;vertical-align:1px}
+.rotulo .meta{font-size:11px;color:var(--txt3);margin-top:3px;line-height:1.35}
+.trilha{flex:1;position:relative;height:22px}
+.trilho-bg{position:absolute;inset:0;background:var(--trilho);border-radius:5px}
+.barra{position:absolute;top:0;height:22px;border-radius:5px;display:flex;align-items:center;padding:0 8px;font-size:10.5px;font-weight:600;color:var(--chumbo);overflow:hidden;white-space:nowrap}
+.b-ok{background:var(--araguaia)}
+.b-now{background:var(--ipe)}
+.b-cont{background:var(--planalto);border:1px dashed #CDBF5C;box-sizing:border-box}
+.b-sem{background:var(--neutro)}
+.b-fut{background:var(--lima)}
+.b-verde{background:var(--verde);color:#fff}
+.barra-rot{position:absolute;top:0;height:22px;display:flex;align-items:center;font-size:10.5px;font-weight:500;color:var(--txt2);white-space:nowrap}
+.itens{display:none;padding:2px 0 12px}
+.fase.aberta .itens{display:block}
+.item{display:flex;align-items:center;padding:5px 0}
+.item .rotulo{padding-left:22px;display:block}
+.item .rotulo .op{line-height:1.35;font-size:12px;font-weight:600;color:var(--txt)}
+.item .rotulo .sub{font-size:10.5px;color:var(--txt3);margin-top:2px;line-height:1.35}
+.item .rotulo .op .dt{font-size:10.5px;color:var(--txt2);font-weight:500;margin-left:4px}
+.item.rev .rotulo .op{color:#8A6D08}
+.tag-rev{display:inline-block;font-size:9px;font-weight:600;color:var(--chumbo);background:var(--planalto);padding:1px 6px;border-radius:999px;margin-left:5px;vertical-align:1px}
+.tag-ret{display:inline-block;font-size:9px;font-weight:600;color:var(--verde);background:#E1F0E7;padding:1px 6px;border-radius:999px;margin-left:5px;vertical-align:1px}
+.tag-ag{display:inline-block;font-size:9px;font-weight:600;color:var(--chumbo);background:var(--lima);padding:1px 6px;border-radius:999px;margin-left:5px;vertical-align:1px}
+.item .barra{height:10px;border-radius:3px;top:6px;min-width:6px;padding:0}
+.item .barra-rot{height:10px;top:6px;font-size:10px}
+.hoje{position:absolute;top:0;bottom:0;border-left:2px dashed var(--chumbo);z-index:3}
+.hoje-tag{position:absolute;top:-2px;transform:translateX(-50%);background:var(--chumbo);color:var(--areia);font-size:9.5px;letter-spacing:.3px;padding:3px 8px;border-radius:4px;white-space:nowrap;z-index:4;font-weight:600}
+.rodape-bloco{display:flex;justify-content:space-between;font-size:11px;color:var(--txt3);margin-top:16px;flex-wrap:wrap;gap:8px}
+
+/* ---------- Gráficos ---------- */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:22px 32px 0}
+.duo .bloco{margin:0}
+.graf{position:relative;margin-top:18px}
+.graf.h260{height:260px}.graf.h300{height:300px}.graf.h360{height:360px}.graf.h430{height:430px}
+.conv-strip{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.conv-chip{font-size:11px;color:var(--txt2);background:var(--areia);border-radius:8px;padding:6px 10px;line-height:1.4}
+.conv-chip b{color:var(--verde);font-weight:600}
+.leg-temp{display:flex;flex-direction:column;gap:9px;margin-top:6px}
+.leg-temp div{display:flex;align-items:center;gap:10px;font-size:12.5px}
+.leg-temp i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.leg-temp span{color:var(--txt2);margin-left:auto;font-size:12px;text-align:right}
+.donut-wrap{display:grid;grid-template-columns:200px 1fr;gap:20px;align-items:center;margin-top:18px}
+.donut-wrap .graf{height:200px;margin:0}
+.abas{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
+.aba{font-size:11px;padding:6px 12px;border-radius:999px;border:1px solid var(--linha);background:#fff;color:var(--txt2);cursor:pointer;font-weight:500}
+.aba.on{background:var(--verde);border-color:var(--verde);color:#fff}
+.sem-graf{font-size:12.5px;color:var(--txt3);padding:24px;text-align:center;border:1px dashed var(--linha);border-radius:10px}
+
+/* ---------- Tabela ---------- */
+.filtros{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.chip{font-size:11.5px;padding:6px 13px;border-radius:999px;border:1px solid var(--linha);background:#fff;cursor:pointer;color:var(--txt2);white-space:nowrap;font-weight:500}
+.chip.on{background:var(--verde);color:#fff;border-color:var(--verde)}
+.filtros select,.filtros input{font-family:inherit;font-size:12px;padding:6px 10px;border-radius:8px;border:1px solid var(--linha);background:#fff;color:var(--txt)}
+.filtros input{min-width:220px}
+.filtros .sep{width:1px;height:22px;background:var(--linha);margin:0 4px}
+.tabela-scroll{overflow-x:auto}
+table{width:100%;min-width:1260px;border-collapse:collapse;margin-top:16px;font-size:12.5px}
+th:first-child,td:first-child{min-width:250px}
+th{text-align:left;font-size:11px;color:var(--txt3);border-bottom:1px solid var(--linha);padding:9px 7px;font-weight:600;white-space:nowrap}
+td{padding:10px 7px;border-bottom:1px solid var(--trilho);vertical-align:top}
+tr:hover td{background:#FAF8F3}
+td.num{text-align:right;white-space:nowrap}
+td.dt{font-size:11.5px;color:var(--txt2);white-space:nowrap}
+td.mot{font-size:11.5px;color:var(--txt2);min-width:230px}
+td.et{white-space:nowrap}
+.pill{display:inline-block;font-size:10.5px;font-weight:600;padding:4px 9px;border-radius:999px;white-space:nowrap}
+.p-q{background:#E1F0E7;color:var(--verde)}
+.p-m{background:#FBF3D3;color:#7A6208}
+.p-f{background:#EFECE4;color:#63655D}
+.p-ga{background:var(--verde);color:#fff}
+.p-ab{background:#FBF3D3;color:#7A6208}
+.p-pe{background:#EFECE4;color:#63655D}
+.op-nome{font-weight:500;line-height:1.35}
+.op-sigla{font-size:11px;color:var(--txt3);margin-top:3px}
+.acoes{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;align-items:center}
+.btn{font-size:12px;padding:9px 16px;border-radius:8px;border:1px solid var(--linha);background:#fff;cursor:pointer;color:var(--txt);font-weight:600}
+.btn.pri{background:var(--verde);color:#fff;border-color:var(--verde)}
+.btn.min{padding:6px 12px;font-size:11.5px;font-weight:500;color:var(--txt2)}
+.btn:hover{border-color:var(--verde)}
+.contagem{font-size:11.5px;color:var(--txt3);margin-left:auto}
+.rodape{margin:26px 32px 0;font-size:11.5px;color:var(--txt3);line-height:1.7}
+
+@media (max-width:1240px){ .kpis{grid-template-columns:repeat(3,1fr)} }
+@media (max-width:1000px){
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .duo{grid-template-columns:1fr}
+  :root{--rot:160px}
+  .stepper{flex-wrap:wrap;gap:14px 0}
+  .step{flex:0 0 33.33%}
+  .step .conn{display:none}
+  .donut-wrap{grid-template-columns:1fr}
+  .donut-wrap .graf{height:220px}
+}
+@media (max-width:640px){
+  .kpis{grid-template-columns:1fr;margin:-52px 16px 0}
+  .bloco,.duo,.rodape{margin-left:16px;margin-right:16px}
+  .duo .bloco{margin:0}
+  .hero{padding:26px 18px 74px}
+  .hero h1{font-size:25px}
+  .posicao{position:static;text-align:left;margin-top:14px}
+  .step{flex:0 0 50%}
+  :root{--rot:120px}
+  .rotulo .tag{display:none}
+  .eixo .ano{display:none}
+  .eixo span{font-size:10px}
+}
+@media print{
+  body{background:#fff}
+  .acoes,.filtros,.abas,.ferramentas,.dica{display:none}
+  .bloco,.kpi{box-shadow:none;border:1px solid var(--linha)}
+  .itens{display:block !important}
+  .kpis{margin-top:16px}
+}
+*:focus-visible{outline:2px solid var(--verde);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ============ CABEÇALHO ============ -->
+<header class="hero">
+  <h1>Prospecção de Novos Patrocinadores</h1>
+  <p class="sub">Acompanhamento das tratativas com órgãos públicos, conselhos profissionais, sindicatos e associações elegíveis como patrocinadores do Ipasgo Saúde, com vistas à adesão de seus servidores, vinculados e dependentes.</p>
+  <div class="badges">
+    <span class="badge">Área de negócio: <b>GEPAS / COPAR</b></span>
+    <span class="badge">Modalidade: <b>Autogestão com patrocinador</b></span>
+    <span class="badge">Base normativa: <b>RN ANS nº 137/2006</b></span>
+  </div>
+  <div class="posicao">Posição em<strong id="dt-posicao"></strong></div>
+</header>
+
+<!-- ============ KPIs ============ -->
+<section class="kpis" id="kpis"></section>
+
+<!-- ============ DESTAQUE ============ -->
+<section id="alertas"></section>
+
+<!-- ============ JORNADA ============ -->
+<section class="bloco">
+  <div class="head-flex">
+    <div>
+      <h2>Jornada de prospecção</h2>
+      <p class="leg">Da identificação da entidade elegível à celebração do convênio de patrocínio. Percentuais sobre a carteira mapeada.</p>
+    </div>
+  </div>
+  <div class="stepper" id="stepper"></div>
+  <p class="dica">Clique em uma etapa para abrir, no cronograma abaixo, as datas de cada entidade correspondente.</p>
+</section>
+
+<!-- ============ CRONOGRAMA ============ -->
+<section class="bloco" id="sec-cronograma">
+  <div class="head-flex">
+    <div>
+      <h2>Cronograma detalhado <span class="obs">(inclui a Cam. Caturaí, sem reunião registrada, por ter convênio celebrado)</span></h2>
+      <p class="leg">Clique em uma fase para ver as entidades que a compõem e as respectivas datas.</p>
+    </div>
+    <div class="legenda">
+      <span><i style="background:var(--araguaia)"></i>Concluída</span>
+      <span><i style="background:var(--ipe)"></i>Em andamento</span>
+      <span><i style="background:var(--planalto);border:1px dashed #CDBF5C"></i>Contínua (sem data final)</span>
+      <span><i style="background:var(--lima)"></i>Reunião agendada</span><span><i style="background:var(--neutro)"></i>Desistente</span>
+    </div>
+  </div>
+  <div class="ferramentas">
+    <button class="btn min" onclick="expandirTodas(true)">Expandir todas as fases</button>
+    <button class="btn min" onclick="expandirTodas(false)">Recolher</button>
+    <span class="contagem" id="crono-filtro"></span>
+  </div>
+  <div class="gantt">
+    <div class="eixo" id="eixo"></div>
+    <div class="gantt-corpo" id="gantt"></div>
+  </div>
+  <p class="aviso" id="nota-crono"></p>
+  <div class="rodape-bloco">
+    <span>Fonte: base_conhecimento.xlsx (abas Base e Base2) · GEPAS/COPAR — Ipasgo Saúde</span>
+    <span id="rod-meta"></span>
+  </div>
+</section>
+
+<!-- ============ FUNIL + TEMPERATURA ============ -->
+<div class="duo">
+  <section class="bloco">
+    <h2>Taxa de conversão por etapa</h2>
+    <p class="leg">Entidades remanescentes em cada etapa da jornada e conversão em relação à etapa anterior.</p>
+    <div class="graf h300"><canvas id="g-funil"></canvas></div>
+    <div class="conv-strip" id="conv-strip"></div>
+  </section>
+  <section class="bloco">
+    <h2>Temperatura da carteira</h2>
+    <p class="leg">Classificação das entidades ativas do pipeline por prioridade comercial. Desistentes e desinteressadas não entram neste recorte.</p>
+    <div class="donut-wrap">
+      <div class="graf"><canvas id="g-temp"></canvas></div>
+      <div class="leg-temp" id="leg-temp"></div>
+    </div>
+    <p class="leg" id="temp-insight" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--linha)"></p>
+  </section>
+</div>
+
+<!-- ============ OBJEÇÕES + POTENCIAL ============ -->
+<div class="duo">
+  <section class="bloco">
+    <h2>Objeções, morosidade e entraves</h2>
+    <p class="leg">Motivo registrado para cada entidade do pipeline, segmentado pelo status atual.</p>
+    <div class="graf h430"><canvas id="g-obj"></canvas></div>
+  </section>
+  <section class="bloco">
+    <h2>Potencial de impacto — estudos atuariais</h2>
+    <p class="leg">Vidas consideradas no estudo atuarial das entidades em fase técnica ou avançada.</p>
+    <div class="graf h430"><canvas id="g-vidas"></canvas></div>
+    <div class="legenda" style="margin-top:12px"><span><i style="background:var(--verde)"></i>Quente</span><span><i style="background:var(--ipe)"></i>Morno</span><span><i style="background:var(--lima)"></i>Convênio celebrado</span><span><i style="background:var(--neutro)"></i>Frio / desistente</span></div>
+  </section>
+</div>
+
+<!-- ============ DISTRIBUIÇÃO ============ -->
+<section class="bloco">
+  <div class="head-flex">
+    <div><h2>Distribuição da carteira</h2><p class="leg">Entidades ativas do pipeline por recorte. Desistentes e desinteressadas não são contabilizadas.</p></div>
+    <div class="abas" id="abas">
+      <button class="aba on" data-eixo="seg">Natureza jurídica</button>
+      <button class="aba" data-eixo="etapa">Etapa do pipeline</button>
+      <button class="aba" data-eixo="resp">Responsável</button>
+    </div>
+  </div>
+  <div class="graf h300"><canvas id="g-dist"></canvas></div>
+  <p class="leg" id="dist-insight" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--linha)"></p>
+</section>
+
+<!-- ============ CARTEIRA ============ -->
+<section class="bloco">
+  <div class="head-flex">
+    <div><h2>Carteira prospectada</h2><p class="leg">Registro analítico das tratativas por entidade. As datas provêm da aba Base; etapa, temperatura, status e vidas provêm da aba Base2.</p></div>
+  </div>
+  <div class="filtros" id="filtros"></div>
+  <div class="tabela-scroll">
+    <table id="tabela">
+      <thead><tr>
+        <th>Entidade</th><th>Natureza jurídica</th><th>Etapa</th><th>Resp.</th>
+        <th>Temperatura</th><th>Status</th>
+        <th>1º contato</th><th>1ª reunião</th><th>2ª reunião</th><th>Assinatura</th>
+        <th style="text-align:right">Vidas (estudo)</th><th>Objeção / entrave</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div class="acoes">
+    <button class="btn pri" onclick="window.print()">Imprimir / salvar em PDF</button>
+    <button class="btn" onclick="exportarCSV()">Baixar CSV</button>
+    <span class="contagem" id="tab-contagem"></span>
+  </div>
+</section>
+
+<p class="rodape">
+  Ipasgo Saúde — Operadora de autogestão com patrocinador registrada na ANS · Diretoria de Relações com o Mercado (DIREP) · Gerência de Parcerias e Articulação Setorial (GEPAS) · Coordenação de Gestão de Parcerias (COPAR)<br>
+  Documento de trabalho de uso interno. Fonte: base_conhecimento.xlsx (abas KPIs, Base e Base2). As fases contínuas (negociação e aprovação) não possuem data de término fixada e são revistas a cada ciclo de atualização.
+</p>
+
+</div>
+
+<script>
+/* =====================================================================
+   1. CONFIGURAÇÃO — altere apenas este bloco no dia a dia
+   ===================================================================== */
+const CFG = {
+  posicao:     "2026-09-17",   // data de referência do painel
+  inicioLinha: "2026-04-01",   // início do eixo do cronograma
+  fimLinha:    "2026-10-31",   // fim do eixo do cronograma
+  mapIni:      "2026-04-15",   // período fixo do mapeamento da carteira
+  mapFim:      "2026-04-22"
+};
+
+/* Indicadores — espelham a aba "KPIs" da planilha base_conhecimento.xlsx */
+const KPI = {
+  mapeadas: 105,         // Total de Entidades Mapeadas
+  respostas: 81,         // Total de Contatos com Resposta
+  reunioes: 37,          // Total de Reuniões
+  desistencias: 29,      // Total de Desistências/Desinteresses — aba KPIs: 28 · +1 Divinópolis · +1 CRF (reversão) · −1 CRA-GO (retomada)
+  desistPosReuniao: 2,   // ... após reunião (AEAGO e CRF)
+  conversoes: 3,         // Total de Conversões em Convênio (CORECON-GO, Cam. Caturaí e SINATRAN)
+  estudos: 12,           // Entidades com Estudo Atuarial
+  vidasEstudo: 70208     // vidas nos estudos atuariais
+};
+
+/* Reversões: entidades que desistiram já em fase avançada — destacadas no painel */
+const REVERSOES = [
+ {sigla:"CRF", data:"2026-09-10", fase:"Negociação avançada", motivo:"Exige licitação/credenciamento, incompatível com a autogestão"}
+];
+
+/* Reuniões agendadas (ainda não realizadas) */
+const AGENDA = [
+ {sigla:"CRA-GO", data:"2026-09-28", obs:"Reunião de retomada, nos moldes do convênio CORECON-GO"},
+ {sigla:"IFG",    data:"2026-09-30", obs:"Nova reunião técnica"}
+];
+
+/* Retomadas: entidades que voltaram ao pipeline após terem sido dadas como desistentes */
+const RETOMADAS = [
+ {sigla:"CRA-GO", data:"2026-09-16", motivoAnterior:"Vedação normativa a patrocínio/convênio de saúde",
+  nota:"Entidade procurou o Ipasgo Saúde para retomar as tratativas nos moldes do convênio celebrado com o CORECON-GO"}
+];
+
+/* Entidades incluídas manualmente na fase "Negociação e minuta de convênio" (por sigla) */
+const NEGOCIACAO_EXTRA = ["ASGMG","OVG","ASMAG","CODEGO"];
+
+/* Motivos suprimidos do gráfico "Objeções, morosidade e entraves" */
+const MOTIVOS_OCULTOS = ["Representa Pessoa Jurídica"];
+
+/* Entidades — consolidação das abas Base2 (pipeline) e Base (datas).
+   etapa: "1. Leads Mapeados" … "6. Termo / Assinaturas"
+   prio: "Quente" | "Morno" | "Frio"   status: "Em Aberto" | "Desistente" | "Ganho"
+   contato/r1/r2/assin: datas reais (aba Base) — null quando não registradas. */
+const ENTIDADES = [
+ {"nome": "Câmara Municipal de Divinópolis", "sigla": "Cam. Divinópolis", "etapa": "2. Contato & Qualificação Inicial", "resp": "Não informado", "prio": "Frio", "status": "Desistente", "seg": "Câmara Municipal", "motivo": "Ausência de rede credenciada do Ipasgo Saúde na região", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Federação da Agricultura e Pecuária de Goiás", "sigla": "FAEG", "etapa": "1. Leads Mapeados", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sindicato dos Docentes das Universidades Federais de Goiás", "sigla": "ADUFG", "etapa": "1. Leads Mapeados", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Entidade despriorizada em favor de outra", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação Brasileira dos Clubes de Engenharia", "sigla": "ASBRACO", "etapa": "1. Leads Mapeados", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação dos Hospitais do Estado de Goiás", "sigla": "AHEG", "etapa": "1. Leads Mapeados", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sindicato das Entidades Mantenedoras de Estabelecimentos de Educação Superior do Estado de Goiás", "sigla": "SEMESG", "etapa": "1. Leads Mapeados", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sindicato dos Odontologistas no Estado de Goiás", "sigla": "SOEGO", "etapa": "1. Leads Mapeados", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Entidade despriorizada em favor de outra", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sindicato dos Médicos no Estado de Goiás", "sigla": "SIMEGO", "etapa": "1. Leads Mapeados", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Entidade despriorizada em favor de outra", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação Comercial Empresarial de Goiânia", "sigla": "ACEG", "etapa": "1. Leads Mapeados", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação Bras. de Bares e Restaurantes", "sigla": "ABRASEL", "etapa": "1. Leads Mapeados", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sindicato dos Enfermeiros de Goiás", "sigla": "SIEG", "etapa": "1. Leads Mapeados", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Entidade despriorizada em favor de outra", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sociedade Goiana de Oftalmologia", "sigla": "SGO", "etapa": "1. Leads Mapeados", "resp": "Arthur", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Sem retorno após tentativas de contato", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação dos Distribuidores e Atacadistas do Estado de Goiás", "sigla": "ADAG", "etapa": "1. Leads Mapeados", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação Brasileira da Indústria de Hotéis", "sigla": "ABIH", "etapa": "1. Leads Mapeados", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sindicato das Indústrias de Carnes e Derivados no Estado de Goiás", "sigla": "SINDICARNE", "etapa": "1. Leads Mapeados", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação Pro-Desenvolvimento Industrial de Goiás", "sigla": "ADIAL", "etapa": "1. Leads Mapeados", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação das Empresas do Mercado Imobiliário", "sigla": "ADEMI-GO", "etapa": "1. Leads Mapeados", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação dos Notários e Registradores de Goiás", "sigla": "ANOREG-GO", "etapa": "1. Leads Mapeados", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação Goiana de Supermercados", "sigla": "AGOS", "etapa": "1. Leads Mapeados", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação Multisetorial de Micro e Pequenas Empresas", "sigla": "AGPE", "etapa": "1. Leads Mapeados", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Federação do Comercio de Bens, Serviços e Turismo do Estado de Goiás", "sigla": "FECOMERCIO-GO", "etapa": "1. Leads Mapeados", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Federação das Indústrias do Estado de Goiás", "sigla": "FIEG", "etapa": "1. Leads Mapeados", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sindicato dos Professores do Estado de Goiás", "sigla": "SINPRO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-06-26", "r1": "2026-06-29", "r2": "2026-08-12", "assin": null},
+ {"nome": "Conselho de Arquitetura e Urbanismo de Goiás", "sigla": "CAU-GO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Conselho de Classe", "motivo": "Vedação normativa a patrocínio/convênio de saúde", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Empresa Brasileira de Pesquisa Agropecuária", "sigla": "EMBRAPA", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Entidade Federal (GO)", "motivo": "Exclusividade/contrato vigente com outra operadora", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sindicato das Indústrias do Vestuário do Estado de Goiás", "sigla": "SINVEST", "etapa": "2. Contato & Qualificação Inicial", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Agência Goiana de Habitação S/A", "sigla": "AGEHAB", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Em Aberto", "seg": "Sociedade de Economia Mista (GO)", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-05-29", "r1": "2026-06-03", "r2": null, "assin": null},
+ {"nome": "Associação Comercial, Industrial e de Serviços do Estado de Goiás", "sigla": "ACIEG", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Sem retorno após tentativas de contato", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Instituto Federal de Educação, Ciência e Tecnologia de Goiás", "sigla": "IFG", "etapa": "2. Contato & Qualificação Inicial", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Entidade Federal (GO)", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-04-27", "r1": "2026-05-27", "r2": null, "assin": null},
+ {"nome": "Companhia Metropolitana de Transportes Coletivos", "sigla": "CMTC", "etapa": "2. Contato & Qualificação Inicial", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Empresa Pública (GO)", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-04-24", "r1": "2026-05-06", "r2": null, "assin": null},
+ {"nome": "Instituto Federal Goiano", "sigla": "IF GOIANO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Entidade Federal (GO)", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-04-27", "r1": "2026-05-15", "r2": null, "assin": null},
+ {"nome": "Conselho Regional de Odontologia de Goiás", "sigla": "CRO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Conselho de Classe", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-05-26", "r1": "2026-08-03", "r2": null, "assin": null},
+ {"nome": "Conselho Regional de Enfermagem de Goiás", "sigla": "COREN", "etapa": "2. Contato & Qualificação Inicial", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Conselho de Classe", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-06-01", "r1": "2026-06-25", "r2": null, "assin": null},
+ {"nome": "Sindicato dos Auditores Fiscais de Goiânia", "sigla": "SINDIFFISC", "etapa": "2. Contato & Qualificação Inicial", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Sem retorno após tentativas de contato", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Companhia de Saneamento de Goiás S.A.", "sigla": "SANEAGO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Empresa Pública (GO)", "motivo": "Sem retorno após tentativas de contato", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sindicato dos Empregados no Comércio no Estado de Goiás", "sigla": "SECEG", "etapa": "2. Contato & Qualificação Inicial", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Sem retorno após tentativas de contato", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Instituto Nacional de Colonização e Reforma Agrária", "sigla": "INCRA", "etapa": "2. Contato & Qualificação Inicial", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Entidade Federal (GO)", "motivo": "Decisão delegada a associação/sindicato representativo", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação Nacional dos Servidores públicos da Previdência e Seguridade Social em Goiás", "sigla": "ANASPS", "etapa": "2. Contato & Qualificação Inicial", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Em análise interna do Ipasgo", "vidas": 0, "contato": "2026-07-20", "r1": "2026-07-29", "r2": null, "assin": null},
+ {"nome": "Sindicato dos Trabalhadores nas Indústrias de Alimentação de Anápolis", "sigla": "SINDALIMENTOS", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Sem retorno após tentativas de contato", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Universidade Federal de Jataí", "sigla": "UFJ", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Em Aberto", "seg": "Entidade Federal (GO)", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-04-28", "r1": "2026-06-19", "r2": null, "assin": null},
+ {"nome": "Associação dos Servidores da Justiça Trabalhista do Estado de Goiás", "sigla": "ASJUSTEGO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Associação", "motivo": "Exclusividade/contrato vigente com outra operadora", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sindicato dos Trabalhadores Técnico-Administrativos em Educação das Instituições Federais de Ensino Superior do Estado de Goiás", "sigla": "SINT-IFESGO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Em análise interna do Ipasgo", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Departamento Nacional de Infraestrutura de Transportes", "sigla": "DNIT", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Entidade Federal (GO)", "motivo": "Exige licitação/credenciamento (inviável p/ autogestão)", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação dos Auditores de Tributos do Fisco Municipal de Goiânia", "sigla": "AFFIM", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Sem retorno após tentativas de contato", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sindicato dos Empregados em Edifícios de Goiânia", "sigla": "SEEG", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Desistente", "seg": "Sindicato", "motivo": "Exclusividade/contrato vigente com outra operadora", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Conselho Regional de Química - 12ª Região", "sigla": "CRQ-12", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Conselho de Classe", "motivo": "Vedação normativa a patrocínio/convênio de saúde", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação Brasileira dos Engenheiros e Tecnólogos Mecânicos do Estado de Goias", "sigla": "ABEMEC", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Sem retorno após tentativas de contato", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Conselho Regional de Biologia da 4ª Região", "sigla": "CRBio-4", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Conselho de Classe", "motivo": "Sede/competência fora de Goiás", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Conselho Regional de Educação Física da 14ª Região", "sigla": "CREF14", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Conselho de Classe", "motivo": "Exige licitação/credenciamento (inviável p/ autogestão)", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação dos Trabalhadores da Construção Civil de Goiás", "sigla": "ATCGO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Sem retorno após tentativas de contato", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação dos Servidores da Justiça Federal em Goiás", "sigla": "ASSOJAF/SERJUS", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-06-07", "r1": "2026-07-31", "r2": null, "assin": null},
+ {"nome": "Conselho Regional de Contabilidade", "sigla": "CRC-GO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Conselho de Classe", "motivo": "Exclusividade/contrato vigente com outra operadora", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Prefeitura de Nova Roma", "sigla": "Pref. Nova Roma", "etapa": "2. Contato & Qualificação Inicial", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Prefeitura", "motivo": "Sem retorno após tentativas de contato", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Conselho Regional de Biblioteconomia da 1ª Região", "sigla": "CRB-1", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Conselho de Classe", "motivo": "Desinteresse manifestado sem justificativa específica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Defensoria Pública da União (Goiânia)", "sigla": "DPU", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Entidade Federal (GO)", "motivo": "Exige licitação/credenciamento (inviável p/ autogestão)", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação dos Servidores de Nível Superior da Prefeitura de Goiânia", "sigla": "ANSPMG", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-07-06", "r1": "2026-08-20", "r2": null, "assin": null},
+ {"nome": "Câmara Municipal de Nova Roma", "sigla": "Cam. Nova Roma", "etapa": "2. Contato & Qualificação Inicial", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Câmara Municipal", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-08-03", "r1": "2026-08-12", "r2": null, "assin": null},
+ {"nome": "Associação dos Servidores da Agência Nacional de Saúde", "sigla": "ASSANS", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Desistente", "seg": "Associação", "motivo": "Sede/competência fora de Goiás", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação dos Juízes Federais da 1ª Região - Goiás", "sigla": "AJUFER-GO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Desistente", "seg": "Associação", "motivo": "Sede/competência fora de Goiás", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Instituto Nacional do Seguro Social", "sigla": "INSS", "etapa": "2. Contato & Qualificação Inicial", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Entidade Federal (GO)", "motivo": "Em análise interna do Ipasgo", "vidas": 0, "contato": "2026-04-28", "r1": "2026-06-12", "r2": "2026-07-29", "assin": null},
+ {"nome": "Sindicato dos Servidores do Poder Judiciário Federal em Goiás", "sigla": "SINJUFEGO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Sem retorno após tentativas de contato", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Tribunal Regional Eleitoral de Goiás", "sigla": "TRE-GO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Entidade Federal (GO)", "motivo": "Exclusividade/contrato vigente com outra operadora", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação Médica de Goiás", "sigla": "AMG", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Desistente", "seg": "Associação", "motivo": "Sem retorno após tentativas de contato", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Universidade Federal de Catalão", "sigla": "UFCAT", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Em Aberto", "seg": "Entidade Federal (GO)", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-04-27", "r1": "2026-05-18", "r2": null, "assin": null},
+ {"nome": "Sindicato Patronal Rural de Corumbá de Goiás", "sigla": "SRCG", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação de Engenheiros Agrônomos de Goiás", "sigla": "AEAGO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Desistente", "seg": "Associação", "motivo": "Desinteresse manifestado sem justificativa específica", "vidas": 0, "contato": "2026-06-29", "r1": "2026-07-21", "r2": null, "assin": null},
+ {"nome": "Companhia de Investimentos e Parcerias do Estado de Goiás", "sigla": "GOIÁS PARCERIAS", "etapa": "2. Contato & Qualificação Inicial", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Sociedade de Economia Mista (GO)", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-07-07", "r1": "2026-07-14", "r2": null, "assin": null},
+ {"nome": "Sociedade Goiana de Ginecologia e Obstetrícia", "sigla": "SGGO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Desistente", "seg": "Sindicato", "motivo": "Sem retorno após tentativas de contato", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sindicato dos Trabalhadores Metalúrgicos", "sigla": "SINDMETAL", "etapa": "2. Contato & Qualificação Inicial", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-07-09", "r1": "2026-07-17", "r2": null, "assin": null},
+ {"nome": "Conselho Regional de Corretores de Imóveis - 5ª Região", "sigla": "CRECI-5", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Conselho de Classe", "motivo": "Desinteresse manifestado sem justificativa específica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Ministério Público Federal (Procuradoria em GO)", "sigla": "MPF-GO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Entidade Federal (GO)", "motivo": "Desinteresse manifestado sem justificativa específica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Polícia Rodoviária Federal (Superintendência Regional GO)", "sigla": "PRF (SR-GO)", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Em Aberto", "seg": "Entidade Federal (GO)", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-04-28", "r1": "2026-05-13", "r2": null, "assin": null},
+ {"nome": "União Nacional dos Auditores e Técnicos Federais de Finanças e Controle", "sigla": "UNACON", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Associação", "motivo": "Exclusividade/contrato vigente com outra operadora", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Polícia Federal (Superintendência Regional GO)", "sigla": "PF (SR-GO)", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Entidade Federal (GO)", "motivo": "Desinteresse manifestado sem justificativa específica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sindicato dos Trabalhadores em Indústrias de Panificação e Confeitaria de Goiânia", "sigla": "SINTPÃO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-07-09", "r1": "2026-08-07", "r2": null, "assin": null},
+ {"nome": "Conselho Regional de Medicina do Estado de Goiás", "sigla": "CREMEGO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Conselho de Classe", "motivo": "Desinteresse manifestado sem justificativa específica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sindicato dos Trabalhadores em Educação de Goiás", "sigla": "SINTEGO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Aguardando definição de agenda/reunião", "vidas": 0, "contato": "2026-07-02", "r1": "2026-07-16", "r2": null, "assin": null},
+ {"nome": "Centrais de Abastecimento de Goiás S.A", "sigla": "CEASA", "etapa": "2. Contato & Qualificação Inicial", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Sociedade de Economia Mista (GO)", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-07-10", "r1": "2026-08-26", "r2": null, "assin": null},
+ {"nome": "Tribunal Regional do Trabalho da 18ª Região", "sigla": "TRT-18", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Entidade Federal (GO)", "motivo": "Decisão delegada a associação/sindicato representativo", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sindicato dos Farmacêuticos no Estado de Goiás", "sigla": "SINFAR-GO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Sindicato", "motivo": "Vedação normativa a patrocínio/convênio de saúde", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Agência de Fomento de Goiás S/A", "sigla": "GOIÁS FOMENTO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Em Aberto", "seg": "Sociedade de Economia Mista (GO)", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-04-29", "r1": "2026-05-27", "r2": null, "assin": null},
+ {"nome": "Conselho Regional de Administração de Goiás", "sigla": "CRA-GO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Nathalya", "prio": "Morno", "status": "Em Aberto", "seg": "Conselho de Classe", "motivo": "Negociação retomada nos moldes do convênio CORECON-GO", "vidas": 0, "contato": "2026-05-26", "r1": "2026-06-09", "r2": null, "assin": null},
+ {"nome": "Goiás Telecomunicações S. A", "sigla": "GOIÁS TELECOM", "etapa": "2. Contato & Qualificação Inicial", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Sociedade de Economia Mista (GO)", "motivo": "Sem retorno após tentativas de contato", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sindicato Nacional dos Servidores Federais da Educação Básica, Profissional e Tecnológica", "sigla": "SINASEFE", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Sindicato", "motivo": "Desinteresse manifestado sem justificativa específica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Universidade Federal de Goiás", "sigla": "UFG", "etapa": "2. Contato & Qualificação Inicial", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Entidade Federal (GO)", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-04-27", "r1": "2026-07-21", "r2": null, "assin": null},
+ {"nome": "Tribunal Regional Federal da 1ª Região (Justiça Federal)", "sigla": "TRF-1", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Entidade Federal (GO)", "motivo": "Desinteresse manifestado sem justificativa específica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Metrobus Transporte Coletivo S/A", "sigla": "METROBUS", "etapa": "2. Contato & Qualificação Inicial", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Sociedade de Economia Mista (GO)", "motivo": "Aguardando definição de agenda/reunião", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Associação Brasileira de Odontologia – Seção Goiás", "sigla": "ABO-GO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Desistente", "seg": "Associação", "motivo": "Vedação normativa a patrocínio/convênio de saúde", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Instituto Brasileiro de Geografia e Estatística", "sigla": "IBGE", "etapa": "2. Contato & Qualificação Inicial", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Entidade Federal (GO)", "motivo": "Aguardando definição de agenda/reunião", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sindicato dos Trabalhadores da Sistema Único de Saúde do Estado de Goiás", "sigla": "SINDSAUDE", "etapa": "2. Contato & Qualificação Inicial", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sociedade Goiana de Pecuária e Agricultura", "sigla": "SGPA", "etapa": "2. Contato & Qualificação Inicial", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-08-06", "r1": "2026-08-12", "r2": null, "assin": null},
+ {"nome": "Sindicato dos Trabalhadores nas Indústrias Químicas, Farmacêuticas e de Material Plástico do Estado de Goiás", "sigla": "SINDQFP", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Sem retorno após tentativas de contato", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Sindicato das Empresas de Serviços Contábeis e das Empresas de Assessoramento, Perícias, Informação e Pesquisa no Estado de Goiás", "sigla": "SESCON", "etapa": "3. Análises & Estudos Técnicos", "resp": "Arthur", "prio": "Quente", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Em análise interna do Ipasgo", "vidas": 26529, "contato": "2026-05-22", "r1": "2026-07-02", "r2": null, "assin": null},
+ {"nome": "Instituto de Desenvolvimento Tecnológico e Humano", "sigla": "IDTECH", "etapa": "3. Análises & Estudos Técnicos", "resp": "Nathalya", "prio": "Morno", "status": "Em Aberto", "seg": "Associação", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-06-17", "r1": "2026-07-22", "r2": null, "assin": null},
+ {"nome": "Associação dos Servidores do Ministério da Agricultura", "sigla": "ASMAG", "etapa": "3. Análises & Estudos Técnicos", "resp": "Nathalya", "prio": "Morno", "status": "Em Aberto", "seg": "Associação", "motivo": "Em análise interna do Ipasgo", "vidas": 277, "contato": "2026-07-10", "r1": "2026-07-17", "r2": null, "assin": null},
+ {"nome": "Organização das Voluntárias de Goiás", "sigla": "OVG", "etapa": "3. Análises & Estudos Técnicos", "resp": "Arthur", "prio": "Morno", "status": "Em Aberto", "seg": "Associação", "motivo": "Aguardando deliberação interna da entidade", "vidas": 3256, "contato": "2026-05-15", "r1": "2026-05-28", "r2": "2026-06-26", "assin": null},
+ {"nome": "Companhia de Desenvolvimento Econômico de Goiás", "sigla": "CODEGO", "etapa": "3. Análises & Estudos Técnicos", "resp": "Nathalya", "prio": "Morno", "status": "Em Aberto", "seg": "Sociedade de Economia Mista (GO)", "motivo": "Em análise interna do Ipasgo", "vidas": 729, "contato": "2026-06-02", "r1": "2026-06-08", "r2": null, "assin": null},
+ {"nome": "Associação dos Servidores da Guarda Civil Metropolitana de Goiânia", "sigla": "ASGMG", "etapa": "3. Análises & Estudos Técnicos", "resp": "Arthur", "prio": "Morno", "status": "Em Aberto", "seg": "Associação", "motivo": "Aguardando deliberação interna da entidade", "vidas": 1548, "contato": "2026-07-03", "r1": "2026-07-08", "r2": null, "assin": null},
+ {"nome": "Conselho Regional de Farmácia do Estado de Goiás", "sigla": "CRF", "etapa": "4. Negociação Avançada", "resp": "Arthur", "prio": "Frio", "status": "Desistente", "seg": "Conselho de Classe", "motivo": "Exige licitação/credenciamento (inviável p/ autogestão)", "vidas": 29683, "contato": "2026-05-26", "r1": "2026-06-03", "r2": null, "assin": null},
+ {"nome": "Indústria Química do Estado de Goiás S. A", "sigla": "IQUEGO", "etapa": "4. Negociação Avançada", "resp": "Arthur", "prio": "Quente", "status": "Em Aberto", "seg": "Sociedade de Economia Mista (GO)", "motivo": "Aguardando deliberação interna da entidade", "vidas": 448, "contato": "2026-06-08", "r1": "2026-06-24", "r2": null, "assin": null},
+ {"nome": "Sindicato dos Trabalhadores no Serviço Público Federal em Goiás", "sigla": "SINTSEP", "etapa": "5. Aprovação CA", "resp": "Yasmin", "prio": "Quente", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Em análise interna do Ipasgo", "vidas": 5360, "contato": "2026-07-02", "r1": "2026-07-08", "r2": null, "assin": null},
+ {"nome": "Conselho Regional de Economia da 18ª Região", "sigla": "CORECON-GO", "etapa": "6. Termo / Assinaturas", "resp": "Yasmin", "prio": "Quente", "status": "Ganho", "seg": "Conselho de Classe", "motivo": "Convênio vigente/assinado", "vidas": 1710, "contato": "2026-05-18", "r1": "2026-05-22", "r2": null, "assin": "2026-08-11"},
+ {"nome": "Sindicato dos Agentes de Trânsito de Goiânia", "sigla": "SINATRAN", "etapa": "6. Termo / Assinaturas", "resp": "Arthur", "prio": "Quente", "status": "Ganho", "seg": "Sindicato", "motivo": "Convênio vigente/assinado", "vidas": 537, "contato": "2026-06-25", "r1": "2026-07-15", "r2": null, "assin": "2026-09-08"},
+ {"nome": "Câmara Municipal de Caturaí", "sigla": "Cam. Caturaí", "etapa": "6. Termo / Assinaturas", "resp": "Karolyne", "prio": "Quente", "status": "Ganho", "seg": "Câmara Municipal", "motivo": "Convênio vigente/assinado", "vidas": 18, "contato": "2026-04-06", "r1": null, "r2": null, "assin": "2026-07-30"},
+ {"nome": "Conselho Regional de Engenharia e Agronomia de Goiás", "sigla": "CREA", "etapa": "6. Termo / Assinaturas", "resp": "Yasmin", "prio": "Quente", "status": "Em Aberto", "seg": "Conselho de Classe", "motivo": "Aguardando deliberação interna da entidade", "vidas": 113, "contato": "2026-05-15", "r1": "2026-06-12", "r2": null, "assin": null}
+];
+
+/* =====================================================================
+   2. MOTOR — não precisa alterar
+   ===================================================================== */
+const D = s => new Date(s+"T00:00:00");
+const HOJE = D(CFG.posicao), INI = D(CFG.inicioLinha), FIM = D(CFG.fimLinha);
+const SPAN = FIM - INI;
+const pos = d => Math.min(100, Math.max(0, ((D(d)-INI)/SPAN)*100));
+const fmt  = d => d ? D(d).toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"}) : "—";
+const fmtL = d => d ? D(d).toLocaleDateString("pt-BR") : "—";
+const fmtC = d => d ? D(d).toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"2-digit"}) : "—";
+const num  = n => (n||0).toLocaleString("pt-BR");
+const dias = (a,b) => Math.round((D(b)-D(a))/864e5);
+const soma = a => a.reduce((s,e)=>s+(e.vidas||0),0);
+const pct  = (a,b) => b ? Math.round(a/b*100) : 0;
+const etapaNum = e => parseInt(e.etapa,10);
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+
+const ETAPA_ROT = {1:"1. Leads mapeados",2:"2. Contato e qualificação",3:"3. Análises e estudos técnicos",4:"4. Negociação avançada",5:"5. Aprovação CA",6:"6. Termo / assinaturas"};
+const ETAPA_CURTA = {1:"1. Leads",2:"2. Qualificação",3:"3. Estudos técnicos",4:"4. Negociação",5:"5. Aprovação CA",6:"6. Assinaturas"};
+const N = KPI.mapeadas;
+const comReuniao = ENTIDADES.filter(e=>e.r1);
+const celebrados = ENTIDADES.filter(e=>e.assin);
+const CRONO      = ENTIDADES.filter(e=>e.r1||e.assin);                              // escopo do cronograma
+const qualif     = ENTIDADES.filter(e=>etapaNum(e)===2);
+const quentes    = ENTIDADES.filter(e=>e.prio==="Quente" && e.status!=="Ganho");
+const negAv      = ENTIDADES.filter(e=>etapaNum(e)===4 && e.status!=="Desistente");
+const revertidas = REVERSOES.map(r=>({...r, ent:ENTIDADES.find(e=>e.sigla===r.sigla)})).filter(r=>r.ent);
+const revSigla   = revertidas.map(r=>r.sigla);
+const retomadas  = RETOMADAS.map(r=>({...r, ent:ENTIDADES.find(e=>e.sigla===r.sigla)})).filter(r=>r.ent);
+const retSigla   = retomadas.map(r=>r.sigla);
+const agenda     = AGENDA.map(a=>({...a, ent:ENTIDADES.find(e=>e.sigla===a.sigla)})).filter(a=>a.ent).sort((a,b)=>a.data.localeCompare(b.data));
+const agSigla    = agenda.map(a=>a.sigla);
+const ultAgenda  = agenda.length ? agenda[agenda.length-1].data : null;
+const aprovCA    = ENTIDADES.filter(e=>etapaNum(e)===6 && !e.assin && e.status!=="Desistente");
+const extraNeg   = ENTIDADES.filter(e=>NEGOCIACAO_EXTRA.includes(e.sigla) && !e.assin);
+const emNegociacao = [...quentes.filter(e=>!aprovCA.includes(e)), ...extraNeg.filter(e=>!quentes.includes(e))]; // quentes ainda não aprovadas pelo CA + inclusões manuais
+const estudos    = ENTIDADES.filter(e=>e.vidas>0);
+const desistentes = ENTIDADES.filter(e=>e.status==="Desistente");
+const ativas      = ENTIDADES.filter(e=>e.status!=="Desistente");                    // carteira ativa (em aberto + ganhas)
+const ultReuniao = comReuniao.map(e=>e.r2||e.r1).sort().slice(-1)[0];
+
+document.getElementById("dt-posicao").textContent = fmtL(CFG.posicao);
+document.getElementById("rod-meta").textContent = "Eixo: "+fmtL(CFG.inicioLinha)+" a "+fmtL(CFG.fimLinha)+" · "+CRONO.length+" entidades exibidas";
+document.getElementById("nota-crono").textContent = "O cronograma exibe exclusivamente as entidades com reunião técnica realizada ("+comReuniao.length+"), somadas à Cam. Caturaí, incluída por ter convênio celebrado sem reunião registrada. As demais "+(N-CRONO.length)+" entidades da carteira constam apenas nos gráficos e na tabela analítica.";
+
+/* ---- KPIs (aba "KPIs") ---- */
+const topEstudos = [...estudos].sort((a,b)=>b.vidas-a.vidas).slice(0,2);
+const kpis = [
+ {rot:"Entidades mapeadas", val:num(KPI.mapeadas), nota:"Carteira integral de prospecção · "+new Set(ENTIDADES.map(e=>e.seg)).size+" naturezas jurídicas"},
+ {rot:"Contatos com resposta", donut:pct(KPI.respostas,KPI.mapeadas), val:num(KPI.respostas)+" <small>de "+KPI.mapeadas+"</small>", nota:(KPI.mapeadas-KPI.respostas)+" entidades sem retorno ou ainda não abordadas"},
+ {rot:"Reuniões técnicas realizadas", val:num(KPI.reunioes), nota:pct(KPI.reunioes,KPI.respostas)+"% dos contatos com resposta · última em "+fmtL(ultReuniao)+(agenda.length?" · "+agenda.length+" agendada"+(agenda.length===1?"":"s")+": "+agenda.map(a=>a.sigla+" ("+fmt(a.data)+")").join(" e "):"")},
+ {rot:"Desistências e desinteresses", val:num(KPI.desistencias), nota:KPI.desistPosReuniao+" após reunião técnica · "+pct(KPI.desistencias,KPI.mapeadas)+"% da carteira"},
+ {rot:"Conversões em convênio", val:num(KPI.conversoes), nota:celebrados.map(e=>e.sigla+" ("+fmt(e.assin)+")").join(" · ")},
+ {rot:"Entidades com estudo atuarial", val:num(KPI.estudos), nota:num(KPI.vidasEstudo)+" vidas em estudo · "+num(soma(estudos.filter(e=>e.status!=="Desistente")))+" em entidades ativas após reversões"}
+];
+document.getElementById("kpis").innerHTML = kpis.map(k=>{
+  const donut = k.donut!==undefined ? `<svg class="donut-svg" viewBox="0 0 42 42" width="46" height="46" role="img" aria-label="${k.donut}%">
+      <circle cx="21" cy="21" r="16" fill="none" stroke="#F1EDE4" stroke-width="5"/>
+      <circle cx="21" cy="21" r="16" fill="none" stroke="#007940" stroke-width="5" stroke-linecap="round"
+        stroke-dasharray="${(k.donut/100*100.53).toFixed(1)} 100.53" transform="rotate(-90 21 21)"/>
+      <text x="21" y="24.5" text-anchor="middle">${k.donut}%</text></svg>` : "";
+  return `<article class="kpi${donut?" donut":""}">${donut}<div><div class="rot">${k.rot}</div>
+    <div class="val">${k.val}</div><div class="nota">${k.nota}</div></div></article>`;
+}).join("");
+
+/* ---- Destaque: reversões em fase avançada ---- */
+document.getElementById("alertas").innerHTML = revertidas.map(r=>`
+  <div class="alerta">
+    <span class="alerta-tag">Reversão em fase avançada</span>
+    <div class="alerta-txt"><b>${esc(r.ent.nome)} (${esc(r.sigla)})</b> saiu do pipeline em ${fmtL(r.data)}, estando em <b>${esc(r.fase)}</b>.
+      Motivo informado: ${esc(r.motivo)}. A tratativa envolvia ${num(r.ent.vidas)} vidas em estudo atuarial
+      (${pct(r.ent.vidas,KPI.vidasEstudo)}% do total) e foi reclassificada como <b>Frio · Desistente</b>.</div>
+  </div>`).join("") + retomadas.map(r=>`
+  <div class="alerta ok">
+    <span class="alerta-tag">Retomada de negociação</span>
+    <div class="alerta-txt"><b>${esc(r.ent.nome)} (${esc(r.sigla)})</b> voltou ao pipeline em ${fmtL(r.data)}, após ter sido registrada como desistente
+      por ${esc(r.motivoAnterior.toLowerCase())}. ${esc(r.nota)}. Reclassificada como <b>${esc(r.ent.prio)} · ${esc(r.ent.status)}</b>,
+      sob responsabilidade de <b>${esc(r.ent.resp)}</b>.</div>
+  </div>`).join("") + (agenda.length ? `
+  <div class="alerta agenda">
+    <span class="alerta-tag">Próximas reuniões</span>
+    <div class="alerta-txt">${agenda.map(a=>`<b>${esc(a.sigla)}</b> em ${fmtL(a.data)} — ${esc(a.obs)} (${esc(a.ent.resp)})`).join("<br>")}</div>
+  </div>` : "");
+
+/* ---- Jornada ---- */
+const JORNADA = [
+ {n:1, key:"map",        nome:"Mapeamento da carteira",          curto:"Mapeamento",      qtd:N,                 desc:"Identificação e cadastro das entidades elegíveis."},
+ {n:2, key:"contato",    nome:"Primeiro contato",                curto:"1º contato",      qtd:KPI.respostas,     desc:"Entidades que responderam à abordagem inicial."},
+ {n:3, key:"qualif",     nome:"Qualificação do contato",         curto:"Qualificação",    qtd:qualif.length,     desc:"Entidades na etapa 2 do pipeline (contato & qualificação inicial)."},
+ {n:4, key:"reuniao",    nome:"Reunião técnica",                 curto:"Reunião técnica", qtd:comReuniao.length, desc:"Entidades com data de primeira reunião registrada."},
+ {n:5, key:"negociacao", nome:"Negociação e minuta de convênio", curto:"Negociação",      qtd:emNegociacao.length,    desc:"Entidades quentes ainda não celebradas, acrescidas das inclusões manuais em negociação."},
+ {n:6, key:"celebracao", nome:"Celebração do convênio",          curto:"Celebração",      qtd:celebrados.length, desc:"Convênios assinados."}
+];
+document.getElementById("stepper").innerHTML = JORNADA.map((e,i)=>{
+  const p = pct(e.qtd,N);
+  const st = e.qtd===N ? "ok" : (e.qtd>0 ? "now" : "off");
+  const conn = st==="ok" ? "ok" : (st==="now" ? "now" : "");
+  const conv = i>0 ? `<div class="conv">conversão <b>${pct(e.qtd,JORNADA[i-1].qtd)}%</b></div>` : `<div class="conv">base da jornada</div>`;
+  return `<div class="step" data-key="${e.key}" role="button" tabindex="0" title="${esc(e.desc)}"
+      onclick="selecionar('${e.key}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selecionar('${e.key}')}">
+    <div class="conn ${conn}"></div>
+    <div class="bola ${st}">${st==="ok"?"✓":e.n}</div>
+    <div class="nome">${e.nome}</div>
+    <div class="pct"><b>${e.qtd}</b>/${N} · ${p}%</div>${conv}</div>`;
+}).join("");
+
+/* ---- Cronograma: fases ----
+   tipo do trecho: "ok" concluído · "cont" contínuo (sem término) · "sem" desistência após reunião */
+const ultimaReuniao = e => e.r2||e.r1||e.contato;
+const FASES = [
+ {key:"map", nome:"Mapeamento da carteira", desc:"Período fixo de mapeamento, aplicado a toda a carteira.",
+  lista:()=>CRONO, fixo:[CFG.mapIni,CFG.mapFim], estado:"ok",
+  datas:e=>[CFG.mapIni,CFG.mapFim,"ok"], rot:e=>`${fmt(CFG.mapIni)} — ${fmt(CFG.mapFim)} · 100% concluído`},
+ {key:"contato", nome:"Primeiro contato", desc:"Data real do primeiro contato (aba Base).",
+  lista:()=>CRONO.filter(e=>e.contato), estado:"ok",
+  datas:e=>[e.contato,e.contato,"ok"], rot:e=>`1º contato em ${fmtL(e.contato)}`},
+ {key:"qualif", nome:"Qualificação do contato", desc:"Intervalo entre o primeiro contato e a reunião técnica.",
+  lista:()=>CRONO.filter(e=>e.contato&&e.r1), estado:"ok",
+  datas:e=>[e.contato,e.r1,"ok"], rot:e=>`${fmt(e.contato)} → ${fmt(e.r1)} · ${dias(e.contato,e.r1)} dias até a reunião`},
+ {key:"reuniao", nome:"Reunião técnica", desc:"Datas reais da primeira e, quando houve, da segunda reunião (aba Base).",
+  lista:()=>CRONO.filter(e=>e.r1), estado:"ok",
+  futuro:()=>ultAgenda,
+  datas:e=>[e.r1,e.r2||e.r1,e.status==="Desistente"?"sem":"ok"],
+  rot:e=>{ const a=agenda.find(x=>x.sigla===e.sigla);
+    return `1ª reunião ${fmtL(e.r1)}`+(e.r2?` · 2ª reunião ${fmtL(e.r2)}`:"")
+      +(e.status==="Desistente"?" · desistiu após a reunião":"")
+      +(a?` · nova reunião agendada para ${fmtL(a.data)}`:""); }},
+ {key:"negociacao", nome:"Negociação e minuta de convênio", desc:"Entidades em tratativa de minuta: quentes ainda não aprovadas pelo CA e inclusões manuais. Datas contínuas, sem término fixado.",
+  lista:()=>[...emNegociacao, ...revertidas.map(r=>r.ent)], estado:"cont",
+  datas:e=>{ const r=revertidas.find(x=>x.sigla===e.sigla);
+    return r ? [ultimaReuniao(e),r.data,"sem"] : [ultimaReuniao(e),CFG.posicao,"cont"]; },
+  rot:e=>{ const r=revertidas.find(x=>x.sigla===e.sigla);
+    return r ? `desde ${fmtL(ultimaReuniao(e))} · desistiu em ${fmtL(r.data)} na fase de ${r.fase.toLowerCase()}`
+             : `desde ${fmtL(ultimaReuniao(e))} · em andamento (${dias(ultimaReuniao(e),CFG.posicao)} dias) · ${ETAPA_CURTA[etapaNum(e)].replace(/^\d\. /,"")}`; }},
+ {key:"ca", nome:"Aprovado CA", nova:true, desc:"Etapa 6 do pipeline (termo / assinaturas) sem data de assinatura registrada. Aguarda formalização.",
+  lista:()=>aprovCA, estado:"cont",
+  datas:e=>[ultimaReuniao(e),CFG.posicao,"cont"], rot:e=>`aprovado · aguardando assinatura desde ${fmtL(ultimaReuniao(e))}`},
+ {key:"celebracao", nome:"Celebração do convênio", desc:"Entidades com data de assinatura do convênio confirmada.",
+  lista:()=>celebrados, estado:"ok", cont:true,
+  datas:e=>[e.assin,e.assin,"ok"], rot:e=>`convênio assinado em ${fmtL(e.assin)}`}
+];
+
+/* ---- Eixo mensal + grade ---- */
+const meses = [];
+for(let d=new Date(INI.getFullYear(),INI.getMonth(),1); d<=FIM; d.setMonth(d.getMonth()+1)) if(d>=INI) meses.push(new Date(d));
+const iso = d => d.toISOString().slice(0,10);
+document.getElementById("eixo").innerHTML = meses.map(d=>
+  `<span style="left:${pos(iso(d))}%">${d.toLocaleDateString("pt-BR",{month:"short"}).replace(".","")}<small class="ano">/${String(d.getFullYear()).slice(2)}</small></span>`).join("");
+
+/* ---- Gantt ---- */
+document.getElementById("gantt").innerHTML =
+  meses.map(d=>`<div class="grade" style="left:calc(var(--rot) + (100% - var(--rot)) * ${pos(iso(d))/100})"></div>`).join("") +
+  FASES.map((f,i)=>{
+  const lista = f.lista();
+  const n = lista.length;
+  const ranges = lista.map(f.datas);
+  const ini = f.fixo ? f.fixo[0] : (ranges.length ? ranges.map(r=>r[0]).sort()[0] : CFG.posicao);
+  const fim = f.fixo ? f.fixo[1] : (f.estado==="cont" ? CFG.posicao : (ranges.length ? ranges.map(r=>r[1]).sort().slice(-1)[0] : CFG.posicao));
+  const cls = f.estado==="cont" ? "b-now" : "b-ok";
+  const l = pos(ini), w = Math.max(pos(fim)-l, 1.2);
+  const cont = (f.estado==="cont" || f.cont) ? `<span class="barra b-cont" style="left:${l+w}%;width:${100-l-w}%"></span>` : "";
+  const dFut = f.futuro ? f.futuro() : null;
+  const fut = dFut ? `<span class="barra b-fut" style="left:${l+w}%;width:${Math.max(pos(dFut)-(l+w),1)}%" title="Reuniões agendadas"></span>
+      <span class="barra-rot" style="left:calc(${pos(dFut)}% + 7px)">${agenda.length} agendada${agenda.length===1?"":"s"}</span>` : "";
+  const dFutMeta = f.futuro ? f.futuro() : null;
+  const dentro = w >= 8;
+  const etiqueta = n ? `${n} entidade${n===1?"":"s"}` : "sem entidades";
+  const rotulo = dentro ? "" : `<span class="barra-rot" style="left:calc(${l+w}% + 7px)">${etiqueta}</span>`;
+  const situ = f.estado==="cont" ? "Em andamento" : (f.cont ? n+" celebrado"+(n===1?"":"s")+" · fase aberta" : (dFutMeta ? "Realizadas · novas agendadas" : "Concluída"));
+  const meta = f.estado==="cont" ? `desde ${fmt(ini)} · sem término fixado` : `${fmt(ini)} — ${fmt(fim)}`+(dFutMeta?` · próxima em ${fmt(dFutMeta)}`:"");
+  const itens = lista.sort((a,b)=>f.datas(a)[0].localeCompare(f.datas(b)[0])).map(e=>{
+    const [di,df,tipo] = f.datas(e);
+    const li = pos(di), lw = Math.max(pos(df)-li, 0.9);
+    const b = tipo==="sem" ? "b-sem" : tipo==="cont" ? "b-now" : "b-ok";
+    const contItem = tipo==="cont" ? `<span class="barra b-cont" style="left:${li+lw}%;width:${100-li-lw}%"></span>` : "";
+    const rotItem = tipo==="cont" ? "em andamento" : (di===df ? fmt(di) : `${fmt(di)} – ${fmt(df)}`);
+    const rotPos = tipo==="cont" ? Math.min(li+lw, 100) : li+lw;
+    const rev = revSigla.includes(e.sigla) && f.key==="negociacao";
+    const ret = retSigla.includes(e.sigla) && f.key==="reuniao";
+    const ag = f.key==="reuniao" ? agenda.find(x=>x.sigla===e.sigla) : null;
+    const marcaAg = ag ? `<span class="barra b-fut" style="left:${pos(ag.data)}%;width:1%"></span>
+      <span class="barra-rot" style="left:calc(${pos(ag.data)+1}% + 6px)">agendada ${fmt(ag.data)}</span>` : "";
+    return `<div class="item${rev?" rev":""}"><div class="rotulo"><div class="op">${esc(e.sigla)}${rev?'<span class="tag-rev">reversão</span>':""}${ret?'<span class="tag-ret">retomada</span>':""}${ag?'<span class="tag-ag">nova reunião</span>':""} <span class="dt">${f.rot(e)}</span></div>
+      <div class="sub">${esc(e.seg)} · ${esc(e.resp)}${e.vidas?" · "+num(e.vidas)+" vidas":""}</div></div>
+      <div class="trilha">${contItem}${marcaAg}<span class="barra ${b}" style="left:${li}%;width:${lw}%"></span>
+      <span class="barra-rot" style="left:calc(${rotPos}% + 6px)">${rotItem}</span></div></div>`;
+  }).join("") || `<div class="item"><div class="rotulo"><div class="sub">Nenhuma entidade nesta fase.</div></div><div class="trilha"></div></div>`;
+  return `<div class="fase" data-key="${f.key}">
+    <div class="fase-lin" role="button" tabindex="0" aria-expanded="false" onclick="alternar('${f.key}')"
+         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();alternar('${f.key}')}">
+      <div class="rotulo"><span class="seta">▶</span><div><div class="tit">${f.nome}${f.nova?'<span class="tag">nova fase</span>':''}</div>
+        <div class="meta">${meta} · ${situ}</div></div></div>
+      <div class="trilha"><span class="trilho-bg"></span>${cont}
+        <span class="barra ${cls}" style="left:${l}%;width:${w}%" title="${esc(f.desc)}">${dentro?etiqueta:""}</span>${fut}${rotulo}</div>
+    </div>
+    <div class="itens">${itens}</div></div>`;
+}).join("") + `<div class="hoje" style="left:calc(var(--rot) + (100% - var(--rot)) * ${pos(CFG.posicao)/100})">
+    <span class="hoje-tag">HOJE · ${fmt(CFG.posicao)}</span></div>`;
+
+function atualizarFiltro(){
+  const sel = document.querySelector(".fase.sel");
+  const el = document.getElementById("crono-filtro");
+  el.textContent = sel ? "Fase em destaque: "+FASES.find(f=>f.key===sel.dataset.key).nome : "";
+}
+function alternar(key){
+  const f = document.querySelector(`.fase[data-key="${key}"]`);
+  f.classList.toggle("aberta");
+  f.querySelector(".fase-lin").setAttribute("aria-expanded", f.classList.contains("aberta"));
+  document.querySelectorAll(".fase").forEach(x=>x.classList.toggle("sel", x===f && f.classList.contains("aberta")));
+  document.querySelectorAll(".step").forEach(s=>s.classList.toggle("sel", s.dataset.key===key && f.classList.contains("aberta")));
+  atualizarFiltro();
+}
+/* Clique na jornada: abre somente a fase correspondente e rola até ela. */
+function selecionar(key){
+  document.querySelectorAll(".fase").forEach(f=>{
+    const on = f.dataset.key===key;
+    f.classList.toggle("aberta", on); f.classList.toggle("sel", on);
+    f.querySelector(".fase-lin").setAttribute("aria-expanded", on);
+  });
+  document.querySelectorAll(".step").forEach(s=>s.classList.toggle("sel", s.dataset.key===key));
+  atualizarFiltro();
+  const alvo = document.querySelector(`.fase[data-key="${key}"]`);
+  if(alvo) alvo.scrollIntoView({behavior:"smooth", block:"center"});
+}
+function expandirTodas(abrir){
+  document.querySelectorAll(".fase").forEach(f=>{ f.classList.toggle("aberta",abrir); f.classList.remove("sel"); f.querySelector(".fase-lin").setAttribute("aria-expanded",abrir); });
+  document.querySelectorAll(".step").forEach(s=>s.classList.remove("sel"));
+  atualizarFiltro();
+}
+selecionar("reuniao"); window.scrollTo(0,0);
+
+/* =====================================================================
+   3. GRÁFICOS (Chart.js)
+   ===================================================================== */
+const COR = {verde:"#007940", lima:"#C5E838", areia:"#F3EEE4", araguaia:"#6EB02E", ipe:"#E7C221", planalto:"#EFE98C", chumbo:"#2F302A", neutro:"#B8B2A5"};
+const PRIO_COR = {Quente:COR.verde, Morno:COR.ipe, Frio:COR.neutro};
+const STATUS_COR = {"Ganho":COR.verde, "Em Aberto":COR.ipe, "Desistente":COR.neutro};
+const MOTIVO_CURTO = {
+ "Aguardando deliberação interna da entidade":"Aguardando deliberação da entidade",
+ "Representa Pessoa Jurídica":"Representa pessoa jurídica",
+ "Sem retorno após tentativas de contato":"Sem retorno após tentativas",
+ "Em análise interna do Ipasgo":"Em análise interna (Ipasgo)",
+ "Desinteresse manifestado sem justificativa específica":"Desinteresse sem justificativa",
+ "Exclusividade/contrato vigente com outra operadora":"Contrato vigente com outra operadora",
+ "Vedação normativa a patrocínio/convênio de saúde":"Vedação normativa a patrocínio",
+ "Entidade despriorizada em favor de outra":"Despriorizada em favor de outra",
+ "Exige licitação/credenciamento (inviável p/ autogestão)":"Exige licitação / credenciamento",
+ "Sede/competência fora de Goiás":"Sede fora de Goiás",
+ "Aguardando definição de agenda/reunião":"Aguardando agenda de reunião",
+ "Decisão delegada a associação/sindicato representativo":"Decisão delegada a entidade representativa",
+ "Convênio vigente/assinado":"Convênio assinado",
+ "Ausência de rede credenciada do Ipasgo Saúde na região":"Sem rede credenciada na região",
+ "Negociação retomada nos moldes do convênio CORECON-GO":"Negociação retomada (modelo CORECON-GO)"
+};
+const ESTREITO = window.innerWidth < 640;
+const quebrar = (s,max=24) => { if(ESTREITO) max = Math.min(max,16); if(s.length<=max) return s; const w=s.split(" "),l=[];let c="";w.forEach(x=>{if((c+" "+x).trim().length>max){l.push(c.trim());c=x}else c=(c+" "+x)});if(c)l.push(c.trim());return l; };
+
+/* Rótulos de valor nas barras */
+const rotulosBarra = {
+  id:"rotulos",
+  afterDatasetsDraw(chart, args, opts){
+    if(!opts || !opts.fmt) return;
+    const {ctx} = chart, horiz = chart.options.indexAxis==="y";
+    ctx.save(); ctx.font='600 11px "General Sans", sans-serif'; ctx.fillStyle = COR.chumbo;
+    if(opts.total){
+      const n = chart.data.labels.length;
+      for(let j=0;j<n;j++){
+        let tot=0, x=null, y=null;
+        chart.data.datasets.forEach((ds,i)=>{ const m=chart.getDatasetMeta(i); if(m.hidden) return; tot+=ds.data[j]||0; const b=m.data[j]; if(b && (ds.data[j]||0)>0 && (x===null || b.x>x)){x=b.x;y=b.y;} });
+        if(x!==null){ ctx.textAlign="left"; ctx.textBaseline="middle"; ctx.fillText(opts.fmt(tot,j), x+6, y); }
+      }
+    } else {
+      chart.data.datasets.forEach((ds,i)=>{ const m=chart.getDatasetMeta(i); if(m.hidden) return;
+        m.data.forEach((b,j)=>{ const v=ds.data[j]; if(v==null) return;
+          if(horiz){ ctx.textAlign="left"; ctx.textBaseline="middle"; ctx.fillText(opts.fmt(v,j), b.x+6, b.y); }
+          else { ctx.textAlign="center"; ctx.textBaseline="bottom"; ctx.fillText(opts.fmt(v,j), b.x, b.y-4); } }); });
+    }
+    ctx.restore();
+  }
+};
+/* Texto central do gráfico de rosca */
+const centroRosca = { id:"centro", afterDraw(chart, args, opts){ if(!opts||!opts.linhas) return; const {ctx,chartArea:a}=chart; const cx=(a.left+a.right)/2, cy=(a.top+a.bottom)/2;
+  ctx.save(); ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillStyle=COR.verde; ctx.font='600 26px "General Sans", sans-serif'; ctx.fillText(opts.linhas[0],cx,cy-8);
+  ctx.fillStyle="#63655D"; ctx.font='500 11px "General Sans", sans-serif'; ctx.fillText(opts.linhas[1],cx,cy+14); ctx.restore(); } };
+
+const distChart = {inst:null};
+function graficos(){
+  if(!window.Chart){ document.querySelectorAll(".graf").forEach(g=>g.innerHTML='<div class="sem-graf">Os gráficos exigem conexão com a internet para carregar a biblioteca Chart.js.</div>'); return; }
+  Chart.defaults.font.family = '"General Sans", -apple-system, "Segoe UI", Roboto, sans-serif';
+  Chart.defaults.font.size = 11.5; Chart.defaults.color = "#63655D";
+  Chart.defaults.plugins.legend.display = false;
+  Chart.defaults.plugins.tooltip.backgroundColor = COR.chumbo;
+  Chart.defaults.plugins.tooltip.titleFont = {weight:"600"};
+  Chart.defaults.plugins.tooltip.padding = 10;
+  Chart.register(rotulosBarra, centroRosca);
+  const grade = {color:"#F1EDE4"};
+
+  /* 3.1 Funil / taxa de conversão */
+  new Chart(document.getElementById("g-funil"), { type:"bar",
+    data:{ labels:JORNADA.map(e=>quebrar(e.nome,22)), datasets:[{ data:JORNADA.map(e=>e.qtd), backgroundColor:JORNADA.map((e,i)=>i===JORNADA.length-1?COR.lima:COR.verde), borderRadius:4, barPercentage:.72, categoryPercentage:.9 }] },
+    options:{ indexAxis:"y", maintainAspectRatio:false, layout:{padding:{right:80}},
+      scales:{ x:{min:0, max:N, grid:grade, ticks:{stepSize:15}}, y:{grid:{display:false}} },
+      plugins:{ rotulos:{fmt:(v,j)=>`${v} (${pct(v,N)}%)`},
+        tooltip:{callbacks:{ title:i=>JORNADA[i[0].dataIndex].nome, label:i=>{const j=i.dataIndex; return [`${i.raw} de ${N} entidades (${pct(i.raw,N)}%)`, j>0?`Conversão da etapa anterior: ${pct(i.raw,JORNADA[j-1].qtd)}%`:"Base da jornada", JORNADA[j].desc];} }} } }
+  });
+  document.getElementById("conv-strip").innerHTML = JORNADA.slice(1).map((e,i)=>`<span class="conv-chip">${JORNADA[i].curto} → ${e.curto}: <b>${pct(e.qtd,JORNADA[i].qtd)}%</b></span>`).join("");
+
+  /* 3.2 Temperatura */
+  const prios = ["Quente","Morno","Frio"];
+  const porPrio = prios.map(p=>ativas.filter(e=>e.prio===p));
+  new Chart(document.getElementById("g-temp"), { type:"doughnut",
+    data:{ labels:prios, datasets:[{ data:porPrio.map(a=>a.length), backgroundColor:prios.map(p=>PRIO_COR[p]), borderColor:"#fff", borderWidth:3, hoverOffset:6 }] },
+    options:{ maintainAspectRatio:false, cutout:"66%", plugins:{ centro:{linhas:[String(ativas.length),"ativas"]},
+      tooltip:{callbacks:{label:i=>` ${i.raw} entidades · ${pct(i.raw,ativas.length)}% das ativas`}} } }
+  });
+  document.getElementById("leg-temp").innerHTML = prios.map((p,i)=>`<div><i style="background:${PRIO_COR[p]}"></i><b>${p}</b><span>${porPrio[i].length} entidades · ${pct(porPrio[i].length,ativas.length)}%${soma(porPrio[i])?"<br>"+num(soma(porPrio[i]))+" vidas em estudo":""}</span></div>`).join("");
+  const q = porPrio[0], qAb = q.filter(e=>e.status!=="Ganho");
+  document.getElementById("temp-insight").innerHTML = `Das ${ENTIDADES.length} entidades mapeadas, ${ativas.length} seguem ativas e ${desistentes.length} desistiram ou não se interessaram. As <b>${q.length} entidades quentes</b> reúnem ${num(soma(q))} vidas em estudo (${pct(soma(q),KPI.vidasEstudo)}% do total). Das ${qAb.length} ainda abertas, ${aprovCA.length} ${aprovCA.length===1?"aguarda":"aguardam"} apenas assinatura. A fase de negociação reúne ${emNegociacao.length} entidades (${negAv.length} em negociação avançada no pipeline).`;
+
+  /* 3.3 Objeções × status */
+  const motivos = [...new Set(ENTIDADES.map(e=>e.motivo))].filter(m=>!MOTIVOS_OCULTOS.includes(m)).map(m=>({m, n:ENTIDADES.filter(e=>e.motivo===m).length})).sort((a,b)=>b.n-a.n);
+  const stats = ["Em Aberto","Desistente","Ganho"];
+  new Chart(document.getElementById("g-obj"), { type:"bar",
+    data:{ labels:motivos.map(x=>quebrar(MOTIVO_CURTO[x.m]||x.m,26)),
+      datasets:stats.map(s=>({ label:s, data:motivos.map(x=>ENTIDADES.filter(e=>e.motivo===x.m&&e.status===s).length), backgroundColor:STATUS_COR[s], borderRadius:3, barPercentage:.7, categoryPercentage:.85 })) },
+    options:{ indexAxis:"y", maintainAspectRatio:false, layout:{padding:{right:36}},
+      scales:{ x:{stacked:true, grid:grade, ticks:{stepSize:5}}, y:{stacked:true, grid:{display:false}, ticks:{font:{size:10.5}, autoSkip:false}} },
+      plugins:{ legend:{display:true, position:"top", align:"end", labels:{boxWidth:10, boxHeight:10, usePointStyle:true, pointStyle:"rectRounded"}},
+        rotulos:{total:true, fmt:v=>String(v)},
+        tooltip:{mode:"index", callbacks:{title:i=>motivos[i[0].dataIndex].m, label:i=>` ${i.dataset.label}: ${i.raw}`}} } }
+  });
+
+  /* 3.4 Potencial de impacto — vidas em estudo atuarial */
+  const vidas = [...estudos].sort((a,b)=>b.vidas-a.vidas);
+  new Chart(document.getElementById("g-vidas"), { type:"bar",
+    data:{ labels:vidas.map(e=>e.sigla), datasets:[{ data:vidas.map(e=>e.vidas), backgroundColor:vidas.map(e=>e.status==="Ganho"?COR.lima:(e.status==="Desistente"?COR.neutro:PRIO_COR[e.prio])), borderRadius:4, barPercentage:.72, categoryPercentage:.9 }] },
+    options:{ indexAxis:"y", maintainAspectRatio:false, layout:{padding:{right:70}},
+      scales:{ x:{grid:grade, ticks:{callback:v=>num(v)}}, y:{grid:{display:false}} },
+      plugins:{ rotulos:{fmt:v=>num(v)},
+        tooltip:{callbacks:{ title:i=>vidas[i[0].dataIndex].nome, label:i=>{const e=vidas[i.dataIndex]; return [` ${num(e.vidas)} vidas · ${pct(e.vidas,KPI.vidasEstudo)}% do total em estudo`, ` ${ETAPA_ROT[etapaNum(e)]} · ${e.prio} · ${e.status}`+(revSigla.includes(e.sigla)?" (reversão em fase avançada)":"")];} }} } }
+  });
+
+  /* 3.5 Distribuição da carteira (abas) */
+  function distribuir(eixo){
+    const chave = {seg:e=>e.seg, etapa:e=>ETAPA_ROT[etapaNum(e)], resp:e=>e.resp}[eixo];
+    const g = {}; ativas.forEach(e=>{ const k=chave(e); g[k]=(g[k]||0)+1; });
+    let arr = Object.entries(g);
+    arr = eixo==="etapa" ? arr.sort((a,b)=>a[0].localeCompare(b[0])) : arr.sort((a,b)=>b[1]-a[1]);
+    const cores = arr.map(()=>COR.verde);
+    const cfg = { type:"bar",
+      data:{ labels:arr.map(([k])=>quebrar(k,28)), datasets:[{ data:arr.map(([,v])=>v), backgroundColor:cores, borderRadius:4, barPercentage:.7, categoryPercentage:.85 }] },
+      options:{ indexAxis:"y", maintainAspectRatio:false, layout:{padding:{right:90}},
+        scales:{ x:{grid:grade, min:0}, y:{grid:{display:false}, ticks:{autoSkip:false}} },
+        plugins:{ rotulos:{fmt:v=>`${v} · ${pct(v,ativas.length)}%`}, tooltip:{callbacks:{label:i=>` ${i.raw} entidades ativas (${pct(i.raw,ativas.length)}%)`}} } } };
+    if(distChart.inst){ distChart.inst.data = cfg.data; distChart.inst.options = cfg.options; distChart.inst.update(); }
+    else distChart.inst = new Chart(document.getElementById("g-dist"), cfg);
+    const top = arr.sort((a,b)=>b[1]-a[1])[0];
+    const frases = {
+      seg:`${top[0]} é a natureza jurídica predominante entre as ${ativas.length} entidades ativas: ${top[1]} (${pct(top[1],ativas.length)}%).`,
+      etapa:`${top[1]} entidades ativas (${pct(top[1],ativas.length)}%) estão em "${top[0]}"; ${ativas.filter(e=>etapaNum(e)>=3).length} avançaram para análise técnica ou além.`,
+      resp:`${top[0]} responde pela maior parcela das entidades ativas: ${top[1]} (${pct(top[1],ativas.length)}%).`
+    };
+    document.getElementById("dist-insight").textContent = frases[eixo];
+  }
+  distribuir("seg");
+  document.getElementById("abas").addEventListener("click",e=>{
+    if(!e.target.dataset.eixo) return;
+    document.querySelectorAll(".aba").forEach(a=>a.classList.remove("on"));
+    e.target.classList.add("on"); distribuir(e.target.dataset.eixo);
+  });
+}
+graficos();
+
+/* =====================================================================
+   4. TABELA + FILTROS + EXPORTAÇÃO
+   ===================================================================== */
+const PRIO_CLS = {Quente:"p-q", Morno:"p-m", Frio:"p-f"};
+const STATUS_CLS = {"Ganho":"p-ga","Em Aberto":"p-ab","Desistente":"p-pe"};
+let fEtapa = "Todas", fPrio = "Todas", fStatus = "Todas", fBusca = "";
+const etapasOrd = [...new Set(ENTIDADES.map(e=>etapaNum(e)))].sort();
+document.getElementById("filtros").innerHTML =
+  ["Todas",...etapasOrd].map(s=>`<button class="chip${s==="Todas"?" on":""}" data-f="${s}">${s==="Todas"?"Todas as etapas":ETAPA_ROT[s]} (${s==="Todas"?ENTIDADES.length:ENTIDADES.filter(e=>etapaNum(e)===s).length})</button>`).join("")
+  + `<span class="sep"></span>
+     <select id="f-prio" aria-label="Temperatura"><option value="Todas">Temperatura: todas</option><option>Quente</option><option>Morno</option><option>Frio</option></select>
+     <select id="f-status" aria-label="Status"><option value="Todas">Status: todos</option><option>Em Aberto</option><option>Ganho</option><option>Desistente</option></select>
+     <input id="f-busca" type="search" placeholder="Buscar entidade, sigla ou motivo…" aria-label="Buscar">`;
+document.getElementById("filtros").addEventListener("click",e=>{
+  if(!e.target.dataset.f) return;
+  fEtapa = e.target.dataset.f;
+  document.querySelectorAll(".chip").forEach(c=>c.classList.remove("on"));
+  e.target.classList.add("on"); render();
+});
+document.getElementById("f-prio").addEventListener("change",e=>{fPrio=e.target.value;render()});
+document.getElementById("f-status").addEventListener("change",e=>{fStatus=e.target.value;render()});
+document.getElementById("f-busca").addEventListener("input",e=>{fBusca=e.target.value.toLowerCase();render()});
+
+function render(){
+  const lista = ENTIDADES.filter(e=>
+    (fEtapa==="Todas"||etapaNum(e)===parseInt(fEtapa,10)) &&
+    (fPrio==="Todas"||e.prio===fPrio) && (fStatus==="Todas"||e.status===fStatus) &&
+    (!fBusca || (e.nome+" "+e.sigla+" "+e.motivo+" "+e.seg).toLowerCase().includes(fBusca)))
+    .sort((a,b)=>etapaNum(b)-etapaNum(a) || (b.vidas||0)-(a.vidas||0) || a.nome.localeCompare(b.nome));
+  document.getElementById("tbody").innerHTML = lista.map(e=>`<tr>
+    <td><div class="op-nome">${esc(e.nome)}${revSigla.includes(e.sigla)?' <span class="tag-rev">reversão</span>':""}${retSigla.includes(e.sigla)?' <span class="tag-ret">retomada</span>':""}</div><div class="op-sigla">${esc(e.sigla)}</div></td>
+    <td>${esc(e.seg)}</td><td class="et">${ETAPA_CURTA[etapaNum(e)]}</td><td>${esc(e.resp)}</td>
+    <td><span class="pill ${PRIO_CLS[e.prio]}">${e.prio}</span></td>
+    <td><span class="pill ${STATUS_CLS[e.status]}">${e.status}</span></td>
+    <td class="dt">${fmtC(e.contato)}</td><td class="dt">${fmtC(e.r1)}</td><td class="dt">${fmtC(e.r2)}</td><td class="dt">${fmtC(e.assin)}</td>
+    <td class="num">${e.vidas?num(e.vidas):"—"}</td><td class="mot">${esc(e.motivo)}</td></tr>`).join("")
+    || `<tr><td colspan="12" style="text-align:center;color:var(--txt3);padding:24px">Nenhuma entidade atende aos filtros selecionados.</td></tr>`;
+  document.getElementById("tab-contagem").textContent = `${lista.length} de ${ENTIDADES.length} entidades · ${num(soma(lista))} vidas em estudo`;
+}
+render();
+
+function exportarCSV(){
+  const cab = ["Entidade","Sigla","Natureza jurídica","Etapa","Responsável","Temperatura","Status","1º contato","1ª reunião","2ª reunião","Assinatura","Vidas (estudo atuarial)","Objeção / entrave"];
+  const linhas = ENTIDADES.map(e=>[e.nome,e.sigla,e.seg,e.etapa,e.resp,e.prio,e.status,e.contato?fmtL(e.contato):"",e.r1?fmtL(e.r1):"",e.r2?fmtL(e.r2):"",e.assin?fmtL(e.assin):"",e.vidas||"",e.motivo]);
+  const csv = "\uFEFF"+[cab,...linhas].map(l=>l.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(";")).join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+  a.download = "prospeccao_patrocinadores_"+CFG.posicao+".csv"; a.click();
+}
+</script>
+</body>
+</html>
