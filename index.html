@@ -580,7 +580,8 @@ const agSigla    = agenda.map(a=>a.sigla);
 const ultAgenda  = agenda.length ? agenda[agenda.length-1].data : null;
 const aprovCA    = ENTIDADES.filter(e=>etapaNum(e)===6 && !e.assin && e.status!=="Desistente");
 const extraNeg   = ENTIDADES.filter(e=>NEGOCIACAO_EXTRA.includes(e.sigla) && !e.assin);
-const emNegociacao = [...quentes.filter(e=>!aprovCA.includes(e)), ...extraNeg.filter(e=>!quentes.includes(e))]; // quentes ainda não aprovadas pelo CA + inclusões manuais
+const emNegociacao = [...quentes.filter(e=>!aprovCA.includes(e)), ...extraNeg.filter(e=>!quentes.includes(e))]
+  .filter(e=>e.status!=="Desistente"); // quentes ainda não aprovadas pelo CA + inclusões manuais; desistentes entram só como reversão
 const estudos    = ENTIDADES.filter(e=>e.vidas>0);
 const desistentes = ENTIDADES.filter(e=>e.status==="Desistente");
 const ativas      = ENTIDADES.filter(e=>e.status!=="Desistente");                    // carteira ativa (em aberto + ganhas)
