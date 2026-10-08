@@ -55,6 +55,14 @@ button{font-family:inherit}
 /* ---------- Destaque de reversão ---------- */
 #alertas{margin:18px 32px 0;display:flex;flex-direction:column;gap:12px}
 #alertas:empty{display:none}
+.alertas-toggle{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--linha);border-radius:999px;padding:7px 14px;font-size:12.5px;font-weight:600;color:var(--txt);cursor:pointer;box-shadow:var(--sombra)}
+.alertas-toggle:hover{background:#FAF8F3}
+.alertas-toggle:focus-visible{outline:2px solid var(--verde);outline-offset:2px}
+.alertas-toggle .seta{display:inline-block;font-size:10px;color:var(--txt2);transition:transform .15s}
+.alertas-toggle[aria-expanded="false"] .seta{transform:rotate(-90deg)}
+.alertas-toggle .qtd{background:var(--ipe);color:var(--chumbo);border-radius:999px;padding:1px 8px;font-size:11px}
+#alertas-lista{display:flex;flex-direction:column;gap:12px}
+#alertas-lista[hidden]{display:none}
 .alerta{background:var(--card);border-radius:var(--raio);box-shadow:var(--sombra);border-left:5px solid var(--ipe);padding:16px 20px;display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
 .alerta.ok{border-left-color:var(--araguaia)}
 .alerta.agenda{border-left-color:var(--lima)}
@@ -616,7 +624,7 @@ document.getElementById("kpis").innerHTML = kpis.map(k=>{
 }).join("");
 
 /* ---- Destaque: reversões em fase avançada ---- */
-document.getElementById("alertas").innerHTML = revertidas.map(r=>`
+const alertasHTML = revertidas.map(r=>`
   <div class="alerta">
     <span class="alerta-tag">Reversão em fase avançada</span>
     <div class="alerta-txt"><b>${esc(r.ent.nome)} (${esc(r.sigla)})</b> saiu do pipeline${r.data?" em "+fmtL(r.data):""}, estando em <b>${esc(r.fase)}</b>.
@@ -633,6 +641,23 @@ document.getElementById("alertas").innerHTML = revertidas.map(r=>`
     <span class="alerta-tag">Próximas reuniões</span>
     <div class="alerta-txt">${agenda.map(a=>`<b>${esc(a.sigla)}</b> em ${fmtL(a.data)} — ${esc(a.obs)} (${esc(a.ent.resp)})`).join("<br>")}</div>
   </div>` : "");
+
+/* Destaques recolhíveis: abertos por padrão; o botão recolhe/expande todos juntos */
+(function(){
+  const box = document.getElementById("alertas");
+  const n = (alertasHTML.match(/class="alerta[ "]/g)||[]).length;
+  if(!n) return;
+  box.innerHTML = `<button type="button" class="alertas-toggle" id="alertas-toggle" aria-expanded="true" aria-controls="alertas-lista">
+      <span class="seta" aria-hidden="true">▼</span><span class="txt">Destaques</span><span class="qtd">${n}</span></button>
+    <div id="alertas-lista">${alertasHTML}</div>`;
+  const btn = document.getElementById("alertas-toggle"), lista = document.getElementById("alertas-lista");
+  btn.addEventListener("click", ()=>{
+    const aberto = btn.getAttribute("aria-expanded")==="true";
+    btn.setAttribute("aria-expanded", String(!aberto));
+    btn.querySelector(".txt").textContent = aberto ? "Mostrar destaques" : "Destaques";
+    lista.hidden = aberto;
+  });
+})();
 
 /* ---- Jornada ---- */
 const JORNADA = [
