@@ -397,9 +397,9 @@ const CFG = {
 /* Indicadores — espelham a aba "KPIs" da planilha base_conhecimento.xlsx */
 const KPI = {
   mapeadas: 110,         // Total de Entidades Mapeadas (CSV oportunidades de 05/10/2026: 109 · +1 Divinópolis)
-  respostas: 85,         // Total de Contatos com Resposta — 81 · +AGERPA, SINDGOIANIA, ACOPEGO e Cam. Santa Rita
+  respostas: 86,         // Total de Contatos com Resposta — 81 · +AGERPA, SINDGOIANIA, ACOPEGO e Cam. Santa Rita · +CAU-GO (retomada)
   reunioes: 38,          // Total de Reuniões (entidades com 1ª reunião registrada)
-  desistencias: 37,      // Total de Desistências/Desinteresses
+  desistencias: 36,      // Total de Desistências/Desinteresses (−1 CAU-GO, retomada)
   desistPosReuniao: 5,   // ... após reunião (CRO, AEAGO, SINDMETAL, CRF e SINTSEP)
   conversoes: 3,         // Total de Conversões em Convênio (CORECON-GO, Cam. Caturaí e SINATRAN)
   estudos: 17,           // Entidades com Estudo Atuarial
@@ -414,12 +414,16 @@ const REVERSOES = [
 ];
 
 /* Reuniões agendadas (ainda não realizadas) */
-const AGENDA = [];
+const AGENDA = [
+ {sigla:"CAU-GO", data:"2026-10-15", obs:"Reunião de retomada, nos moldes dos convênios CORECON-GO e CREA"}
+];
 
 /* Retomadas: entidades que voltaram ao pipeline após terem sido dadas como desistentes */
 const RETOMADAS = [
  {sigla:"CRA-GO", data:"2026-09-16", motivoAnterior:"Vedação normativa a patrocínio/convênio de saúde",
-  nota:"Entidade procurou o Ipasgo Saúde para retomar as tratativas nos moldes do convênio celebrado com o CORECON-GO. Após a reunião de 28/09/2026, a reunião prevista para 06/10/2026 foi cancelada, e ainda não há nova data definida"}
+  nota:"Entidade procurou o Ipasgo Saúde para retomar as tratativas nos moldes do convênio celebrado com o CORECON-GO. Após a reunião de 28/09/2026, a reunião prevista para 06/10/2026 foi cancelada, e ainda não há nova data definida"},
+ {sigla:"CAU-GO", data:"2026-10-07", motivoAnterior:"Vedação normativa a patrocínio/convênio de saúde",
+  nota:"Entidade retomou as negociações com o Ipasgo Saúde nos mesmos moldes dos convênios do CORECON-GO e do CREA. O CAU-GO estima cerca de 6.000 vidas inscritas no Estado, das quais cerca de 3.000 em Goiânia. Reunião agendada para 15/10/2026"}
 ];
 
 /* Entidades incluídas manualmente na fase "Negociação e minuta de convênio" (por sigla) */
@@ -455,7 +459,7 @@ const ENTIDADES = [
  {"nome": "Associação Multisetorial de Micro e Pequenas Empresas", "sigla": "AGPE", "etapa": "1. Leads Mapeados", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
  {"nome": "Federação do Comercio de Bens, Serviços e Turismo do Estado de Goiás", "sigla": "FECOMERCIO-GO", "etapa": "1. Leads Mapeados", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
  {"nome": "Federação das Indústrias do Estado de Goiás", "sigla": "FIEG", "etapa": "1. Leads Mapeados", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
- {"nome": "Conselho de Arquitetura e Urbanismo de Goiás", "sigla": "CAU-GO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Conselho de Classe", "motivo": "Vedação normativa a patrocínio/convênio de saúde", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Conselho de Arquitetura e Urbanismo de Goiás", "sigla": "CAU-GO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Conselho de Classe", "motivo": "Aguardando definição de agenda/reunião", "vidas": 0, "contato": "2026-10-07", "r1": null, "r2": null, "assin": null},
  {"nome": "Empresa Brasileira de Pesquisa Agropecuária", "sigla": "EMBRAPA", "etapa": "2. Contato & Qualificação Inicial", "resp": "Karolyne", "prio": "Frio", "status": "Desistente", "seg": "Entidade Federal (GO)", "motivo": "Exclusividade/contrato vigente com outra operadora", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
  {"nome": "Sindicato das Indústrias do Vestuário do Estado de Goiás", "sigla": "SINVEST", "etapa": "2. Contato & Qualificação Inicial", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
  {"nome": "Agência Goiana de Habitação S/A", "sigla": "AGEHAB", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Em Aberto", "seg": "Sociedade de Economia Mista (GO)", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-05-29", "r1": "2026-06-03", "r2": null, "assin": null},
