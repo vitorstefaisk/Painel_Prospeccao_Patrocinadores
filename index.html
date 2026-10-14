@@ -404,9 +404,9 @@ const CFG = {
 
 /* Indicadores — espelham a aba "KPIs" da planilha base_conhecimento.xlsx */
 const KPI = {
-  mapeadas: 110,         // Total de Entidades Mapeadas (CSV oportunidades de 05/10/2026: 109 · +1 Divinópolis)
-  respostas: 86,         // Total de Contatos com Resposta — 81 · +AGERPA, SINDGOIANIA, ACOPEGO e Cam. Santa Rita · +CAU-GO (retomada)
-  reunioes: 38,          // Total de Reuniões (entidades com 1ª reunião registrada)
+  mapeadas: 111,         // Total de Entidades Mapeadas (CSV oportunidades de 05/10/2026: 109 · +1 Divinópolis)
+  respostas: 87,         // Total de Contatos com Resposta — 81 · +AGERPA, SINDGOIANIA, ACOPEGO e Cam. Santa Rita · +CAU-GO (retomada)
+  reunioes: 39,          // Total de Reuniões (entidades com 1ª reunião registrada)
   desistencias: 36,      // Total de Desistências/Desinteresses (−1 CAU-GO, retomada)
   desistPosReuniao: 5,   // ... após reunião (CRO, AEAGO, SINDMETAL, CRF e SINTSEP)
   conversoes: 3,         // Total de Conversões em Convênio (CORECON-GO, Cam. Caturaí e SINATRAN)
@@ -420,6 +420,11 @@ const REVERSOES = [
  {sigla:"CRF", data:"2026-09-10", fase:"Negociação avançada", motivo:"Exige licitação/credenciamento, incompatível com a autogestão"},
  {sigla:"SINTSEP", fase:"Aprovação CA", motivo:"Decisão interna do Ipasgo Saúde, em vista do índice de viabilidade atuarial apurado"}
 ];
+
+/* Destaques no topo: reversões em fase avançada desligadas; retomadas listadas abaixo não geram card
+   (continuam sinalizadas no cronograma). */
+const DESTAQUE_REVERSOES = false;
+const SEM_DESTAQUE = ["CRA-GO"];
 
 /* Reuniões agendadas (ainda não realizadas) */
 const AGENDA = [
@@ -538,6 +543,7 @@ const ENTIDADES = [
  {"nome": "Associação dos Servidores da Educação dos Municípios e do Estado de Goiás", "sigla": "ASEMEGO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Sem retorno após tentativas de contato", "vidas": 0, "contato": "2026-09-09", "r1": null, "r2": null, "assin": null},
  {"nome": "Sindicato dos Trabalhadores do Município de Goiânia", "sigla": "SINDGOIANIA", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-09-17", "r1": "2026-09-23", "r2": null, "assin": null},
  {"nome": "Associação dos Profissionais da Contabilidade do Estado de Goiás", "sigla": "ACOPEGO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Aguardando análise jurídica da minuta pela entidade", "vidas": 0, "contato": "2026-09-22", "r1": "2026-09-30", "r2": null, "assin": null},
+ {"nome": "Federação das Associações Comerciais, Industriais e Agropecuárias do Estado de Goiás", "sigla": "FACIEG", "etapa": "2. Contato & Qualificação Inicial", "resp": "Não informado", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Em análise interna do Ipasgo", "vidas": 0, "contato": "2026-10-06", "r1": "2026-10-14", "r2": null, "assin": null},
  {"nome": "Associação Nacional dos Servidores públicos da Previdência e Seguridade Social em Goiás", "sigla": "ANASPS", "etapa": "3. Análises & Estudos Técnicos", "resp": "Nathalya", "prio": "Morno", "status": "Em Aberto", "seg": "Associação", "motivo": "Em análise interna do Ipasgo", "vidas": 4421, "contato": "2026-07-20", "r1": "2026-07-29", "r2": null, "assin": null},
  {"nome": "Companhia de Desenvolvimento Econômico de Goiás", "sigla": "CODEGO", "etapa": "3. Análises & Estudos Técnicos", "resp": "Nathalya", "prio": "Morno", "status": "Em Aberto", "seg": "Sociedade de Economia Mista (GO)", "motivo": "Em análise interna do Ipasgo", "vidas": 729, "contato": "2026-06-02", "r1": "2026-06-08", "r2": null, "assin": null},
  {"nome": "Sindicato dos Professores do Estado de Goiás", "sigla": "SINPRO", "etapa": "4. Negociação Avançada", "resp": "Yasmin", "prio": "Morno", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Aguardando deliberação interna da entidade", "vidas": 2885, "contato": "2026-06-26", "r1": "2026-06-29", "r2": "2026-08-12", "assin": null},
@@ -624,13 +630,13 @@ document.getElementById("kpis").innerHTML = kpis.map(k=>{
 }).join("");
 
 /* ---- Destaque: reversões em fase avançada ---- */
-const alertasHTML = revertidas.map(r=>`
+const alertasHTML = (DESTAQUE_REVERSOES ? revertidas : []).map(r=>`
   <div class="alerta">
     <span class="alerta-tag">Reversão em fase avançada</span>
     <div class="alerta-txt"><b>${esc(r.ent.nome)} (${esc(r.sigla)})</b> saiu do pipeline${r.data?" em "+fmtL(r.data):""}, estando em <b>${esc(r.fase)}</b>.
       Motivo informado: ${esc(r.motivo)}. A tratativa envolvia ${num(r.ent.vidas)} vidas em estudo atuarial
       (${pct(r.ent.vidas,KPI.vidasEstudo)}% do total) e foi reclassificada como <b>${esc(r.ent.prio)} · ${esc(r.ent.status)}</b>.</div>
-  </div>`).join("") + retomadas.map(r=>`
+  </div>`).join("") + retomadas.filter(r=>!SEM_DESTAQUE.includes(r.sigla)).map(r=>`
   <div class="alerta ok">
     <span class="alerta-tag">Retomada de negociação</span>
     <div class="alerta-txt"><b>${esc(r.ent.nome)} (${esc(r.sigla)})</b> voltou ao pipeline em ${fmtL(r.data)}, após ter sido registrada como desistente
