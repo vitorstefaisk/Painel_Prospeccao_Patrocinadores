@@ -72,6 +72,25 @@ button{font-family:inherit}
 .alerta-txt{flex:1;min-width:260px;font-size:13px;line-height:1.55;color:var(--txt2)}
 .alerta-txt b{color:var(--txt);font-weight:600}
 
+/* ---------- Destaque fixo: submissão ao CA ---------- */
+#submissao-ca{margin:18px 32px 0}
+#submissao-ca:empty{display:none}
+.subm{background:var(--card);border-radius:var(--raio);box-shadow:var(--sombra);border-left:5px solid var(--verde);padding:20px 24px}
+.subm-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px 24px;flex-wrap:wrap}
+.subm h2{margin:0;font-size:17px;font-weight:600;letter-spacing:-.2px}
+.subm-sub{margin:5px 0 0;font-size:12.5px;color:var(--txt2);line-height:1.5}
+.subm-total{text-align:right}
+.subm-total strong{display:block;font-size:26px;font-weight:600;letter-spacing:-.6px;line-height:1.1;color:var(--verde)}
+.subm-total span{font-size:12px;color:var(--txt2)}
+.subm-lista{list-style:none;margin:16px 0 0;padding:0}
+.subm-lista li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:10px 0;border-top:1px solid var(--trilho);font-size:13px}
+.subm-lista .nome{font-weight:500;color:var(--txt)}
+.subm-lista .sigla{color:var(--txt3);font-weight:400}
+.subm-lista .vidas{white-space:nowrap;font-weight:600;color:var(--verde)}
+.subm-lista li.ausente .nome{color:var(--txt3);font-weight:400}
+.subm-vazio{margin:14px 0 0;font-size:12.5px;color:var(--txt3)}
+@media (max-width:640px){ #submissao-ca{margin-left:16px;margin-right:16px} .subm-total{text-align:left} }
+
 /* ---------- Blocos ---------- */
 .bloco{background:var(--card);border-radius:var(--raio);box-shadow:var(--sombra);margin:22px 32px 0;padding:26px 28px}
 .bloco h2{margin:0;font-size:17px;font-weight:600;letter-spacing:-.2px}
@@ -254,6 +273,7 @@ td.et{white-space:nowrap}
 <section class="kpis" id="kpis"></section>
 
 <!-- ============ DESTAQUE ============ -->
+<section id="submissao-ca" aria-label="Submissão para Aprovação do CA"></section>
 <section id="alertas"></section>
 
 <!-- ============ JORNADA ============ -->
@@ -430,6 +450,10 @@ const SEM_DESTAQUE = ["CRA-GO"];
 const AGENDA = [
  {sigla:"CAU-GO", data:"2026-10-15", obs:"Reunião de retomada, nos moldes dos convênios CORECON-GO e CREA"}
 ];
+
+/* Submissão para Aprovação do CA — atualize todo mês com as siglas das entidades que sobem ao CA.
+   O mês e as semanas exibidas acompanham a data do painel. */
+const SUBMISSAO_CA = ["ASGMG","SINPRO","Cam. Santa Rita do Novo Destino"];
 
 /* Retomadas: entidades que voltaram ao pipeline após terem sido dadas como desistentes */
 const RETOMADAS = [
@@ -628,6 +652,39 @@ document.getElementById("kpis").innerHTML = kpis.map(k=>{
   return `<article class="kpi${donut?" donut":""}">${donut}<div><div class="rot">${k.rot}</div>
     <div class="val">${k.val}</div><div class="nota">${k.nota}</div></div></article>`;
 }).join("");
+
+/* ---- Destaque fixo: submissão para aprovação do CA ----
+   O CA ocorre na última semana útil do mês; o processo sobe uma semana antes. */
+(function(){
+  const mes = HOJE.toLocaleDateString("pt-BR",{month:"long"});
+  const titulo = "Submissão para Aprovação do CA - "+mes.charAt(0).toUpperCase()+mes.slice(1)+" de "+HOJE.getFullYear();
+
+  const ult = new Date(HOJE.getFullYear(), HOJE.getMonth()+1, 0);
+  while(ult.getDay()===0 || ult.getDay()===6) ult.setDate(ult.getDate()-1);
+  const caSeg = new Date(ult); caSeg.setDate(ult.getDate()-(ult.getDay()-1));
+  const caSex = new Date(caSeg); caSex.setDate(caSeg.getDate()+4);
+  const subSeg = new Date(caSeg); subSeg.setDate(caSeg.getDate()-7);
+  const subSex = new Date(caSex); subSex.setDate(caSex.getDate()-7);
+  const dm = d => d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"});
+
+  const itens = SUBMISSAO_CA.map(s=>({sigla:s, ent:ENTIDADES.find(e=>e.sigla===s)}));
+  const ok = itens.filter(i=>i.ent);
+  const totalVidas = soma(ok.map(i=>i.ent));
+
+  const lista = itens.length ? `<ul class="subm-lista">${itens.map(i=>i.ent
+    ? `<li><span class="nome">${esc(i.ent.nome)} <span class="sigla">(${esc(i.sigla)})</span></span><span class="vidas">${num(i.ent.vidas)} vidas</span></li>`
+    : `<li class="ausente"><span class="nome">Sigla não encontrada na base: ${esc(i.sigla)}</span><span class="vidas">—</span></li>`).join("")}</ul>`
+    : `<p class="subm-vazio">Nenhuma entidade definida para este mês.</p>`;
+
+  document.getElementById("submissao-ca").innerHTML = `<div class="subm">
+    <div class="subm-head">
+      <div>
+        <h2>${esc(titulo)}</h2>
+        <p class="subm-sub">Processo sobe na semana de ${dm(subSeg)} a ${dm(subSex)} · Reunião do CA na semana de ${dm(caSeg)} a ${dm(caSex)}</p>
+      </div>
+      <div class="subm-total"><strong>${num(totalVidas)}</strong><span>vidas somadas · ${ok.length} ${ok.length===1?"entidade":"entidades"}</span></div>
+    </div>${lista}</div>`;
+})();
 
 /* ---- Destaque: reversões em fase avançada ---- */
 const alertasHTML = (DESTAQUE_REVERSOES ? revertidas : []).map(r=>`
