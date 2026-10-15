@@ -250,6 +250,59 @@ td.et{white-space:nowrap}
   .itens{display:block !important}
   .kpis{margin-top:16px}
 }
+/* ---------- Relatório Diário (PDF executivo) — só aparece na impressão em modo-relatorio ---------- */
+#relatorio-diario{display:none}
+@media print{
+  body.modo-relatorio{background:#fff}
+  body.modo-relatorio .wrap{display:none !important}
+  body.modo-relatorio #relatorio-diario{display:block}
+}
+#relatorio-diario{font-family:var(--sans);color:var(--chumbo);font-size:10px;line-height:1.45}
+#relatorio-diario,#relatorio-diario *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.rd-cab{background:var(--verde);color:#fff;border-radius:8px;padding:16px 20px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
+.rd-cab h1{margin:0;font-size:18px;font-weight:600;letter-spacing:-.2px;line-height:1.2}
+.rd-cab .rd-org{margin-top:5px;font-size:10px;color:var(--areia)}
+.rd-cab .rd-pos{text-align:right;font-size:9.5px;color:var(--areia);white-space:nowrap}
+.rd-cab .rd-pos strong{display:block;font-size:15px;color:var(--lima);font-weight:600}
+.rd-sec{margin-top:14px;break-inside:avoid;page-break-inside:avoid}
+.rd-sec h2{margin:0 0 7px;padding-bottom:4px;font-size:12px;font-weight:600;color:var(--verde);border-bottom:1.5px solid var(--verde);break-after:avoid;page-break-after:avoid}
+.rd-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rd-kpi{border:1px solid var(--linha);border-radius:8px;padding:9px 11px;display:flex;gap:9px;align-items:center;break-inside:avoid;page-break-inside:avoid}
+.rd-kpi .donut-svg{flex:0 0 38px;width:38px;height:38px}
+.rd-kpi .rot{font-size:9px;color:var(--txt2);font-weight:500}
+.rd-kpi .val{font-size:19px;font-weight:600;color:var(--verde);margin-top:3px;letter-spacing:-.4px;line-height:1.1}
+.rd-kpi .val small{font-size:10px;color:var(--txt2);font-weight:500;letter-spacing:0}
+.rd-kpi .nota{font-size:8.5px;color:var(--txt2);margin-top:4px;line-height:1.4}
+.rd-resumo{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px;background:var(--areia);border-radius:8px;padding:8px 11px;break-inside:avoid;page-break-inside:avoid}
+.rd-resumo div{font-size:8.5px;color:var(--txt2)}
+.rd-resumo b{display:block;font-size:13px;color:var(--chumbo);font-weight:600}
+.rd-etapa{display:grid;grid-template-columns:165px 1fr 150px;align-items:center;gap:10px;padding:3px 0;break-inside:avoid;page-break-inside:avoid}
+.rd-etapa .rd-nome{font-size:9.5px;font-weight:600}
+.rd-trilho{height:12px;background:var(--areia);border-radius:3px;position:relative;overflow:hidden}
+.rd-barra{position:absolute;left:0;top:0;bottom:0;background:var(--verde);border-radius:3px}
+.rd-barra.fim{background:var(--lima)}
+.rd-etapa .rd-num{font-size:9px;color:var(--txt2);text-align:right;white-space:nowrap}
+.rd-etapa .rd-num b{color:var(--chumbo);font-weight:600}
+#relatorio-diario .rd-alertas{display:flex;flex-direction:column;gap:6px}
+#relatorio-diario .alerta{box-shadow:none;border:1px solid var(--linha);border-left:4px solid var(--ipe);border-radius:8px;padding:8px 12px;gap:10px;break-inside:avoid;page-break-inside:avoid}
+#relatorio-diario .alerta.ok{border-left-color:var(--araguaia)}
+#relatorio-diario .alerta.agenda{border-left-color:var(--lima)}
+#relatorio-diario .alerta-tag{font-size:8.5px;padding:3px 8px}
+#relatorio-diario .alerta-txt{font-size:9.5px;min-width:0;line-height:1.45}
+#relatorio-diario table{width:100%;min-width:0;border-collapse:collapse;margin:0;font-size:9px}
+#relatorio-diario thead{display:table-header-group}
+#relatorio-diario th:first-child,#relatorio-diario td:first-child{min-width:0}
+#relatorio-diario th{font-size:8px;color:var(--txt2);text-transform:uppercase;letter-spacing:.3px;padding:5px 6px;border-bottom:1px solid var(--linha);white-space:nowrap;text-align:left;font-weight:600}
+#relatorio-diario td{padding:5px 6px;border-bottom:1px solid var(--trilho);vertical-align:top;background:#fff}
+#relatorio-diario tr{break-inside:avoid;page-break-inside:avoid}
+#relatorio-diario .rd-n{text-align:right;white-space:nowrap}
+#relatorio-diario .rd-sem{white-space:nowrap}
+#relatorio-diario tfoot{display:table-row-group}
+#relatorio-diario tfoot td{font-weight:600;background:var(--areia);border-bottom:0}
+#relatorio-diario .rd-ent b{font-weight:600}
+#relatorio-diario .rd-ent span{color:var(--txt2)}
+#relatorio-diario .rd-vazio{margin:0;font-size:9.5px;color:var(--txt3)}
+
 *:focus-visible{outline:2px solid var(--verde);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){*{transition:none !important}html{scroll-behavior:auto}}
 </style>
@@ -386,6 +439,7 @@ td.et{white-space:nowrap}
   <div class="acoes">
     <button class="btn pri" onclick="window.print()">Imprimir / salvar em PDF</button>
     <button class="btn" onclick="exportarCSV()">Baixar CSV</button>
+    <button class="btn" id="btn-relatorio" onclick="gerarRelatorioDiario()">Relatório Diário</button>
     <span class="contagem" id="tab-contagem"></span>
   </div>
 </section>
@@ -396,6 +450,8 @@ td.et{white-space:nowrap}
 </p>
 
 </div>
+
+<div id="relatorio-diario" aria-hidden="true"></div>
 
 <script>
 /* =====================================================================
@@ -470,6 +526,16 @@ const RETOMADAS = [
 
 /* Entidades incluídas manualmente na fase "Negociação e minuta de convênio" (por sigla) */
 const NEGOCIACAO_EXTRA = ["ASGMG","OVG","ASMAG","CODEGO","SINPRO","Cam. Santa Rita do Novo Destino"];
+
+/* Relatório Diário (PDF): quantidade de reuniões recentes listadas (mínimo 3) */
+const REL_ULTIMAS_REUNIOES = 5;
+
+/* Convênios não aprovados pelo Ipasgo Saúde — usados no Relatório Diário.
+   sigla obrigatória; data ("AAAA-MM-DD") e motivo opcionais. Sem motivo, vale o registrado na entidade. */
+const NAO_APROVADOS_IPASGO = [
+ {sigla:"SINTSEP"},
+ {sigla:"Cam. Divinópolis"}
+];
 
 /* Motivos suprimidos do gráfico "Objeções, morosidade e entraves" */
 const MOTIVOS_OCULTOS = ["Representa Pessoa Jurídica"];
@@ -632,6 +698,7 @@ const emNegociacao = [...quentes.filter(e=>!aprovCA.includes(e)), ...extraNeg.fi
 const estudos    = ENTIDADES.filter(e=>e.vidas>0);
 const desistentes = ENTIDADES.filter(e=>e.status==="Desistente");
 const ativas      = ENTIDADES.filter(e=>e.status!=="Desistente");                    // carteira ativa (em aberto + ganhas)
+const vidasAtivas = soma(estudos.filter(e=>e.status!=="Desistente"));
 const ultReuniao = comReuniao.map(e=>e.r2||e.r1).sort().slice(-1)[0];
 
 document.getElementById("dt-posicao").textContent = fmtL(CFG.posicao);
@@ -646,14 +713,15 @@ const kpis = [
  {rot:"Reuniões técnicas realizadas", val:num(KPI.reunioes), nota:pct(KPI.reunioes,KPI.respostas)+"% dos contatos com resposta · última em "+fmtL(ultReuniao)+(agenda.length?" · "+agenda.length+" agendada"+(agenda.length===1?"":"s")+": "+agenda.map(a=>a.sigla+" ("+fmt(a.data)+")").join(" e "):"")},
  {rot:"Desistências e desinteresses", val:num(KPI.desistencias), nota:KPI.desistPosReuniao+" após reunião técnica · "+pct(KPI.desistencias,KPI.mapeadas)+"% da carteira"},
  {rot:"Conversões em convênio", val:num(KPI.conversoes), nota:celebrados.map(e=>e.sigla+" ("+fmt(e.assin)+")").join(" · ")},
- {rot:"Entidades com estudo atuarial", val:num(KPI.estudos), nota:num(KPI.vidasEstudo)+" vidas em estudo · "+num(soma(estudos.filter(e=>e.status!=="Desistente")))+" em entidades ativas após reversões"}
+ {rot:"Entidades com estudo atuarial", val:num(KPI.estudos), nota:num(KPI.vidasEstudo)+" vidas em estudo · "+num(vidasAtivas)+" em entidades ativas após reversões"}
 ];
-document.getElementById("kpis").innerHTML = kpis.map(k=>{
-  const donut = k.donut!==undefined ? `<svg class="donut-svg" viewBox="0 0 42 42" width="46" height="46" role="img" aria-label="${k.donut}%">
+const donutSVG = p => `<svg class="donut-svg" viewBox="0 0 42 42" width="46" height="46" role="img" aria-label="${p}%">
       <circle cx="21" cy="21" r="16" fill="none" stroke="#F1EDE4" stroke-width="5"/>
       <circle cx="21" cy="21" r="16" fill="none" stroke="#007940" stroke-width="5" stroke-linecap="round"
-        stroke-dasharray="${(k.donut/100*100.53).toFixed(1)} 100.53" transform="rotate(-90 21 21)"/>
-      <text x="21" y="24.5" text-anchor="middle">${k.donut}%</text></svg>` : "";
+        stroke-dasharray="${(p/100*100.53).toFixed(1)} 100.53" transform="rotate(-90 21 21)"/>
+      <text x="21" y="24.5" text-anchor="middle">${p}%</text></svg>`;
+document.getElementById("kpis").innerHTML = kpis.map(k=>{
+  const donut = k.donut!==undefined ? donutSVG(k.donut) : "";
   return `<article class="kpi${donut?" donut":""}">${donut}<div><div class="rot">${k.rot}</div>
     <div class="val">${k.val}</div><div class="nota">${k.nota}</div></div></article>`;
 }).join("");
@@ -1060,6 +1128,106 @@ function exportarCSV(){
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
   a.download = "prospeccao_patrocinadores_"+CFG.posicao+".csv"; a.click();
+}
+
+/* =====================================================================
+   5. RELATÓRIO DIÁRIO — PDF executivo gerado pela impressão do navegador.
+      Todos os números vêm das mesmas variáveis dos cards e gráficos.
+   ===================================================================== */
+function htmlRelatorioDiario(){
+  const secao = (titulo, corpo) => `<section class="rd-sec"><h2>${titulo}</h2>${corpo}</section>`;
+  const ent = e => `<span class="rd-ent"><b>${esc(e.sigla)}</b> <span>· ${esc(e.nome)}</span></span>`;
+  const vidasOuTraco = e => e.vidas ? num(e.vidas) : "—";
+  const tabela = (cab, linhas, total) => `<table>
+    <thead><tr>${cab.map(([t,n])=>`<th${n?' class="rd-n"':""}>${t}</th>`).join("")}</tr></thead>
+    <tbody>${linhas}</tbody>${total!==undefined?`<tfoot><tr><td colspan="${cab.length-1}">Total</td><td class="rd-n">${total}</td></tr></tfoot>`:""}</table>`;
+
+  const cabecalho = `<header class="rd-cab">
+    <div><h1>Relatório Diário — Prospecção de Novos Patrocinadores</h1>
+      <div class="rd-org">GEPAS / COPAR · Autogestão com patrocinador</div></div>
+    <div class="rd-pos">Posição em<strong>${fmtL(CFG.posicao)}</strong></div></header>`;
+
+  const kpisHTML = `<div class="rd-kpis">${kpis.map(k=>`<article class="rd-kpi">${k.donut!==undefined?donutSVG(k.donut):""}
+      <div><div class="rot">${k.rot}</div><div class="val">${k.val}</div><div class="nota">${k.nota}</div></div></article>`).join("")}</div>
+    <div class="rd-resumo">
+      <div><b>${num(ativas.length)}</b>entidades ativas</div>
+      <div><b>${num(desistentes.length)}</b>desistentes</div>
+      <div><b>${num(KPI.vidasEstudo)}</b>vidas em estudo</div>
+      <div><b>${num(vidasAtivas)}</b>vidas em entidades ativas</div></div>`;
+
+  const jornadaHTML = JORNADA.map((e,i)=>`<div class="rd-etapa">
+      <div class="rd-nome">${e.n}. ${e.nome}</div>
+      <div class="rd-trilho"><span class="rd-barra${i===JORNADA.length-1?" fim":""}" style="width:${pct(e.qtd,N)}%"></span></div>
+      <div class="rd-num"><b>${e.qtd}</b> · ${pct(e.qtd,N)}% · ${i>0?"conversão "+pct(e.qtd,JORNADA[i-1].qtd)+"%":"base da jornada"}</div></div>`).join("");
+
+  const nReunioes = Math.max(3, REL_ULTIMAS_REUNIOES);
+  const reunioes = ENTIDADES.flatMap(e=>[["1ª reunião",e.r1],["2ª reunião",e.r2]]
+      .filter(([,d])=>d && d<=CFG.posicao).map(([tipo,d])=>({e,tipo,d})))
+    .sort((a,b)=>b.d.localeCompare(a.d) || a.e.sigla.localeCompare(b.e.sigla))
+    .slice(0,nReunioes);
+  const reunioesHTML = reunioes.length ? tabela([["Data"],["Entidade"],["Tipo"],["Responsável"],["Temperatura"],["Vidas em estudo",1]],
+    reunioes.map(r=>`<tr><td class="rd-sem">${fmtL(r.d)}</td><td>${ent(r.e)}</td><td class="rd-sem">${r.tipo}</td><td>${esc(r.e.resp)}</td><td>${esc(r.e.prio)}</td><td class="rd-n">${vidasOuTraco(r.e)}</td></tr>`).join(""))
+    : `<p class="rd-vazio">Nenhuma reunião registrada até a data de posição.</p>`;
+
+  const conv = [...celebrados].sort((a,b)=>b.assin.localeCompare(a.assin));
+  const convHTML = conv.length ? tabela([["Entidade"],["Assinatura"],["Vidas",1]],
+    conv.map(e=>`<tr><td>${ent(e)}</td><td class="rd-sem">${fmtL(e.assin)}</td><td class="rd-n">${vidasOuTraco(e)}</td></tr>`).join(""), num(soma(conv)))
+    : `<p class="rd-vazio">Nenhum convênio celebrado até a data de posição.</p>`;
+
+  const siglasNaoAprov = NAO_APROVADOS_IPASGO.map(n=>n.sigla);
+  const desistAv = desistentes.filter(e=>(etapaNum(e)>=3 || e.vidas>0 || revSigla.includes(e.sigla)) && !siglasNaoAprov.includes(e.sigla));
+  const desistHTML = desistAv.length ? tabela([["Entidade"],["Etapa em que estava"],["Data da desistência"],["Motivo"],["Vidas",1]],
+    desistAv.map(e=>{ const r = revertidas.find(x=>x.sigla===e.sigla);
+      return `<tr><td>${ent(e)}</td><td>${esc(r ? r.fase : ETAPA_ROT[etapaNum(e)])}</td><td class="rd-sem">${r && r.data ? fmtL(r.data) : "—"}</td><td>${esc(r ? r.motivo : e.motivo)}</td><td class="rd-n">${vidasOuTraco(e)}</td></tr>`; }).join(""), num(soma(desistAv)))
+    : `<p class="rd-vazio">Nenhuma desistência em fase avançada.</p>`;
+
+  const naoAprov = NAO_APROVADOS_IPASGO.map(n=>({...n, ent:ENTIDADES.find(e=>e.sigla===n.sigla)}));
+  const naoAprovHTML = naoAprov.length ? tabela([["Entidade"],["Data"],["Motivo"],["Vidas",1]],
+    naoAprov.map(n=>n.ent
+      ? `<tr><td>${ent(n.ent)}</td><td class="rd-sem">${n.data ? fmtL(n.data) : "—"}</td><td>${esc(n.motivo || n.ent.motivo || "—")}</td><td class="rd-n">${n.ent.vidas ? num(n.ent.vidas) : "sem estudo atuarial"}</td></tr>`
+      : `<tr><td>${esc(n.sigla)}</td><td>—</td><td>Sigla não encontrada na base</td><td class="rd-n">—</td></tr>`).join(""),
+    num(soma(naoAprov.filter(n=>n.ent).map(n=>n.ent))))
+    : `<p class="rd-vazio">Nenhum convênio registrado como não aprovado.</p>`;
+
+  return cabecalho
+    + secao("Indicadores principais", kpisHTML)
+    + secao("Jornada de prospecção", jornadaHTML)
+    + (alertasHTML.trim() ? secao("Destaques do dia", `<div class="rd-alertas">${alertasHTML}</div>`) : "")
+    + secao(`Últimas ${nReunioes} reuniões ocorridas`, reunioesHTML)
+    + secao("Convênios celebrados", convHTML)
+    + secao("Desistentes em fase avançada", desistHTML)
+    + secao("Convênios não aprovados pelo Ipasgo Saúde", naoAprovHTML);
+}
+
+function gerarRelatorioDiario(){
+  const box = document.getElementById("relatorio-diario");
+  const tituloOriginal = document.title;
+  const rodape = `Posição em ${fmtL(CFG.posicao)} · GEPAS/COPAR · Ipasgo Saúde · Documento de uso interno`;
+  const fonteRodape = `font-family:"General Sans",Arial,sans-serif;font-size:7.5pt;color:#63655D`;
+  /* @page só existe enquanto o relatório está ativo, para não afetar a impressão do painel completo */
+  const pagina = document.createElement("style");
+  pagina.textContent = `@page{size:A4 portrait;margin:12mm 12mm 14mm;
+    @bottom-left{content:"${rodape}";${fonteRodape}}
+    @bottom-right{content:"Página " counter(page) " de " counter(pages);${fonteRodape}}}`;
+
+  box.innerHTML = htmlRelatorioDiario();
+  document.head.appendChild(pagina);
+  document.body.classList.add("modo-relatorio");
+  document.title = "Relatorio_Diario_Prospeccao_Patrocinadores_"+CFG.posicao;
+
+  let restaurado = false;
+  const restaurar = () => {
+    if(restaurado) return;
+    restaurado = true;
+    window.removeEventListener("afterprint", restaurar);
+    document.body.classList.remove("modo-relatorio");
+    document.title = tituloOriginal;
+    pagina.remove();
+    box.innerHTML = "";
+  };
+  window.addEventListener("afterprint", restaurar);
+  window.print();
+  setTimeout(restaurar, 1000); // navegadores em que afterprint não dispara
 }
 </script>
 </body>
