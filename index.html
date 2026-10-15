@@ -486,8 +486,8 @@ const KPI = {
   desistencias: 36,      // Total de Desistências/Desinteresses (−1 CAU-GO, retomada)
   desistPosReuniao: 5,   // ... após reunião (CRO, AEAGO, SINDMETAL, CRF e SINTSEP)
   conversoes: 3,         // Total de Conversões em Convênio (CORECON-GO, Cam. Caturaí e SINATRAN)
-  estudos: 17,           // Entidades com Estudo Atuarial
-  vidasEstudo: 80174     // vidas nos estudos atuariais
+  estudos: 18,           // Entidades com Estudo Atuarial (+1 Cam. Divinópolis)
+  vidasEstudo: 80192     // vidas nos estudos atuariais (+18 Cam. Divinópolis)
 };
 
 /* Reversões: entidades que desistiram já em fase avançada — destacadas no painel.
@@ -545,7 +545,7 @@ const MOTIVOS_OCULTOS = ["Representa Pessoa Jurídica"];
    prio: "Quente" | "Morno" | "Frio"   status: "Em Aberto" | "Desistente" | "Ganho"
    contato/r1/r2/assin: datas reais (aba Base) — null quando não registradas. */
 const ENTIDADES = [
- {"nome": "Câmara Municipal de Divinópolis", "sigla": "Cam. Divinópolis", "etapa": "2. Contato & Qualificação Inicial", "resp": "Não informado", "prio": "Frio", "status": "Desistente", "seg": "Câmara Municipal", "motivo": "Ausência de rede credenciada do Ipasgo Saúde na região", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
+ {"nome": "Câmara Municipal de Divinópolis", "sigla": "Cam. Divinópolis", "etapa": "2. Contato & Qualificação Inicial", "resp": "Não informado", "prio": "Frio", "status": "Desistente", "seg": "Câmara Municipal", "motivo": "Ausência de rede credenciada do Ipasgo Saúde na região", "vidas": 18, "contato": null, "r1": null, "r2": null, "assin": null},
  {"nome": "Federação da Agricultura e Pecuária de Goiás", "sigla": "FAEG", "etapa": "1. Leads Mapeados", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
  {"nome": "Sindicato dos Docentes das Universidades Federais de Goiás", "sigla": "ADUFG", "etapa": "1. Leads Mapeados", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Entidade despriorizada em favor de outra", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
  {"nome": "Associação Brasileira dos Clubes de Engenharia", "sigla": "ASBRACO", "etapa": "1. Leads Mapeados", "resp": "Nathalya", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Representa Pessoa Jurídica", "vidas": 0, "contato": null, "r1": null, "r2": null, "assin": null},
@@ -638,7 +638,7 @@ const ENTIDADES = [
  {"nome": "Associação dos Servidores da Educação dos Municípios e do Estado de Goiás", "sigla": "ASEMEGO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Sem retorno após tentativas de contato", "vidas": 0, "contato": "2026-09-09", "r1": null, "r2": null, "assin": null},
  {"nome": "Sindicato dos Trabalhadores do Município de Goiânia", "sigla": "SINDGOIANIA", "etapa": "2. Contato & Qualificação Inicial", "resp": "Arthur", "prio": "Frio", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Aguardando deliberação interna da entidade", "vidas": 0, "contato": "2026-09-17", "r1": "2026-09-23", "r2": null, "assin": null},
  {"nome": "Associação dos Profissionais da Contabilidade do Estado de Goiás", "sigla": "ACOPEGO", "etapa": "2. Contato & Qualificação Inicial", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Aguardando análise jurídica da minuta pela entidade", "vidas": 0, "contato": "2026-09-22", "r1": "2026-09-30", "r2": null, "assin": null},
- {"nome": "Federação das Associações Comerciais, Industriais e Agropecuárias do Estado de Goiás", "sigla": "FACIEG", "etapa": "2. Contato & Qualificação Inicial", "resp": "Não informado", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Em análise interna do Ipasgo", "vidas": 0, "contato": "2026-10-06", "r1": "2026-10-14", "r2": null, "assin": null},
+ {"nome": "Federação das Associações Comerciais, Industriais e Agropecuárias do Estado de Goiás", "sigla": "FACIEG", "etapa": "2. Contato & Qualificação Inicial", "resp": "Yasmin", "prio": "Frio", "status": "Em Aberto", "seg": "Associação", "motivo": "Em análise interna do Ipasgo", "vidas": 0, "contato": "2026-10-06", "r1": "2026-10-14", "r2": null, "assin": null},
  {"nome": "Associação Nacional dos Servidores públicos da Previdência e Seguridade Social em Goiás", "sigla": "ANASPS", "etapa": "3. Análises & Estudos Técnicos", "resp": "Nathalya", "prio": "Morno", "status": "Em Aberto", "seg": "Associação", "motivo": "Em análise interna do Ipasgo", "vidas": 4421, "contato": "2026-07-20", "r1": "2026-07-29", "r2": null, "assin": null},
  {"nome": "Companhia de Desenvolvimento Econômico de Goiás", "sigla": "CODEGO", "etapa": "3. Análises & Estudos Técnicos", "resp": "Nathalya", "prio": "Morno", "status": "Em Aberto", "seg": "Sociedade de Economia Mista (GO)", "motivo": "Em análise interna do Ipasgo", "vidas": 729, "contato": "2026-06-02", "r1": "2026-06-08", "r2": null, "assin": null},
  {"nome": "Sindicato dos Professores do Estado de Goiás", "sigla": "SINPRO", "etapa": "4. Negociação Avançada", "resp": "Yasmin", "prio": "Morno", "status": "Em Aberto", "seg": "Sindicato", "motivo": "Aguardando deliberação interna da entidade", "vidas": 2885, "contato": "2026-06-26", "r1": "2026-06-29", "r2": "2026-08-12", "assin": null},
