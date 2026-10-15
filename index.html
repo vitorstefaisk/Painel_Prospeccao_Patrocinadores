@@ -273,7 +273,7 @@ td.et{white-space:nowrap}
 <section class="kpis" id="kpis"></section>
 
 <!-- ============ DESTAQUE ============ -->
-<section id="submissao-ca" aria-label="Submissão para Aprovação do CA"></section>
+<section id="submissao-ca" aria-label="Submissão ao CA"></section>
 <section id="alertas"></section>
 
 <!-- ============ JORNADA ============ -->
@@ -451,7 +451,7 @@ const AGENDA = [
  {sigla:"CAU-GO", data:"2026-10-15", obs:"Reunião de retomada, nos moldes dos convênios CORECON-GO e CREA"}
 ];
 
-/* Submissão para Aprovação do CA — atualize todo mês com as siglas das entidades que sobem ao CA.
+/* Submissão ao CA — atualize todo mês com as siglas das entidades que sobem ao CA.
    O mês e as semanas exibidas acompanham a data do painel. */
 const SUBMISSAO_CA = ["ASGMG","SINPRO","Cam. Santa Rita do Novo Destino"];
 
@@ -657,7 +657,7 @@ document.getElementById("kpis").innerHTML = kpis.map(k=>{
    O CA ocorre na última semana útil do mês; o processo sobe uma semana antes. */
 (function(){
   const mes = HOJE.toLocaleDateString("pt-BR",{month:"long"});
-  const titulo = "Submissão para Aprovação do CA - "+mes.charAt(0).toUpperCase()+mes.slice(1)+" de "+HOJE.getFullYear();
+  const titulo = "Submissão ao CA - "+mes.charAt(0).toUpperCase()+mes.slice(1)+" de "+HOJE.getFullYear();
 
   const ult = new Date(HOJE.getFullYear(), HOJE.getMonth()+1, 0);
   while(ult.getDay()===0 || ult.getDay()===6) ult.setDate(ult.getDate()-1);
