@@ -451,9 +451,14 @@ const AGENDA = [
  {sigla:"CAU-GO", data:"2026-10-15", obs:"Reunião de retomada, nos moldes dos convênios CORECON-GO e CREA"}
 ];
 
-/* Submissão ao CA — atualize todo mês com as siglas das entidades que sobem ao CA.
-   O mês e as semanas exibidas acompanham a data do painel. */
-const SUBMISSAO_CA = ["ASGMG","SINPRO","Cam. Santa Rita do Novo Destino"];
+/* Submissão ao CA — atualize todo mês.
+   competencia: mês de referência do CA (aparece no título) · ca: data da reunião do CA
+   A documentação sobe via processo 7 dias antes da data do CA. */
+const SUBMISSAO_CA = {
+  competencia: "2026-10",
+  ca:          "2026-11-03",
+  entidades:   ["ASGMG","SINPRO","Cam. Santa Rita do Novo Destino"]
+};
 
 /* Retomadas: entidades que voltaram ao pipeline após terem sido dadas como desistentes */
 const RETOMADAS = [
@@ -653,21 +658,17 @@ document.getElementById("kpis").innerHTML = kpis.map(k=>{
     <div class="val">${k.val}</div><div class="nota">${k.nota}</div></div></article>`;
 }).join("");
 
-/* ---- Destaque fixo: submissão para aprovação do CA ----
-   O CA ocorre na última semana útil do mês; o processo sobe uma semana antes. */
+/* ---- Destaque fixo: submissão ao CA ---- */
 (function(){
-  const mes = HOJE.toLocaleDateString("pt-BR",{month:"long"});
-  const titulo = "Submissão ao CA - "+mes.charAt(0).toUpperCase()+mes.slice(1)+" de "+HOJE.getFullYear();
+  const ref = D(SUBMISSAO_CA.competencia+"-01");
+  const mes = ref.toLocaleDateString("pt-BR",{month:"long"});
+  const titulo = "Submissão ao CA - "+mes.charAt(0).toUpperCase()+mes.slice(1)+" de "+ref.getFullYear();
 
-  const ult = new Date(HOJE.getFullYear(), HOJE.getMonth()+1, 0);
-  while(ult.getDay()===0 || ult.getDay()===6) ult.setDate(ult.getDate()-1);
-  const caSeg = new Date(ult); caSeg.setDate(ult.getDate()-(ult.getDay()-1));
-  const caSex = new Date(caSeg); caSex.setDate(caSeg.getDate()+4);
-  const subSeg = new Date(caSeg); subSeg.setDate(caSeg.getDate()-7);
-  const subSex = new Date(caSex); subSex.setDate(caSex.getDate()-7);
-  const dm = d => d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"});
+  const dtCA = D(SUBMISSAO_CA.ca);
+  const dtProcesso = new Date(dtCA); dtProcesso.setDate(dtCA.getDate()-7);
+  const dma = d => d.toLocaleDateString("pt-BR");
 
-  const itens = SUBMISSAO_CA.map(s=>({sigla:s, ent:ENTIDADES.find(e=>e.sigla===s)}));
+  const itens = SUBMISSAO_CA.entidades.map(s=>({sigla:s, ent:ENTIDADES.find(e=>e.sigla===s)}));
   const ok = itens.filter(i=>i.ent);
   const totalVidas = soma(ok.map(i=>i.ent));
 
@@ -680,7 +681,7 @@ document.getElementById("kpis").innerHTML = kpis.map(k=>{
     <div class="subm-head">
       <div>
         <h2>${esc(titulo)}</h2>
-        <p class="subm-sub">Processo sobe na semana de ${dm(subSeg)} a ${dm(subSex)} · Reunião do CA na semana de ${dm(caSeg)} a ${dm(caSex)}</p>
+        <p class="subm-sub">Documentação sobe via processo em ${dma(dtProcesso)}, uma semana antes do CA · Reunião do CA em ${dma(dtCA)}</p>
       </div>
       <div class="subm-total"><strong>${num(totalVidas)}</strong><span>vidas somadas · ${ok.length} ${ok.length===1?"entidade":"entidades"}</span></div>
     </div>${lista}</div>`;
